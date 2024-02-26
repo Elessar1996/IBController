@@ -2,6 +2,7 @@ from PyQt6.QtWidgets import QMainWindow, QTableWidgetItem, QPushButton
 from PyQt6.uic import loadUi
 from IBInterface import MainIB
 import random
+import time
 class MainWindow(QMainWindow):
 
     def __init__(self):
@@ -16,6 +17,8 @@ class MainWindow(QMainWindow):
     def get_positions_clicked(self):
 
         positions = self.ib.get_positions()
+        time.sleep(2)
+
 
         row_count = self.table.rowCount()
 
