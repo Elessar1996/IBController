@@ -4,6 +4,8 @@ from IBInterface import MainIB
 import random
 import time
 import threading
+
+
 class MainWindow(QMainWindow):
 
     def __init__(self):
@@ -16,7 +18,6 @@ class MainWindow(QMainWindow):
         self.get_positions_btn.clicked.connect(self.start_getting_positions)
 
         self.positions = None
-
 
     def get_positions_from_ib(self):
 
@@ -45,27 +46,15 @@ class MainWindow(QMainWindow):
         t = threading.Thread(target=self.get_positions_from_ib)
         t.start()
 
-
-
     def display_positions_clicked(self):
 
         row_count = self.table.rowCount()
 
+
         for p in self.positions:
+            print(p)
             position_type = 'LONG' if float(p.position) > 0 else 'SHORT'
             self.table.setItem(row_count, 0, QTableWidgetItem(p.ticker))
-            self.table.setItem(row_count, 1, QTableWidgetItem(p.position))
+            self.table.setItem(row_count, 1, QTableWidgetItem(str(p.position)))
             self.table.setItem(row_count, 2, QTableWidgetItem(position_type))
             row_count += 1
-
-
-
-
-
-
-
-
-
-
-
-
