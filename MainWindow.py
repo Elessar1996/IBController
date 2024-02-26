@@ -50,7 +50,6 @@ class MainWindow(QMainWindow):
 
         row_count = self.table.rowCount()
 
-
         for p in self.positions:
             position_type = 'LONG' if float(p.position) > 0 else 'SHORT'
             long_btn = QPushButton()
