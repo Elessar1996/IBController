@@ -1,6 +1,7 @@
 from PyQt6.QtWidgets import QMainWindow, QTableWidgetItem, QPushButton
 from PyQt6.uic import loadUi
 from IBInterface import MainIB
+from IBAlternative import IBAlternative
 import random
 import time
 import threading
@@ -13,6 +14,8 @@ class MainWindow(QMainWindow):
         super(MainWindow, self).__init__()
         loadUi('MainWindow.ui', self)
         self.ib = MainIB(client_id=random.randint(20, 30))
+
+        self.ib_alternative = IBAlternative(ib=self.ib)
 
         self.display_positions_btn.clicked.connect(self.display_positions_clicked)
         self.get_positions_btn.clicked.connect(self.start_getting_positions)
