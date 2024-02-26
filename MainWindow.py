@@ -22,7 +22,7 @@ class MainWindow(QMainWindow):
 
         positions = self.ib.get_positions()
 
-        for _ in range(10):
+        for _ in range(100):
 
             if len(positions) == 0:
                 time.sleep(0.01)
