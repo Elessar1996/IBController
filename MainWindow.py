@@ -63,9 +63,9 @@ class MainWindow(QMainWindow):
             self.table.setItem(row_count, 0, QTableWidgetItem(p.ticker))
             self.table.setItem(row_count, 1, QTableWidgetItem(str(p.position)))
             self.table.setItem(row_count, 2, QTableWidgetItem(position_type))
-            self.table.setItem(row_count, 3, long_btn)
-            self.table.setItem(row_count, 4, short_btn)
-            self.table.setItem(row_count, 5, close_btn)
+            self.table.setCellWidget(row_count, 3, long_btn)
+            self.table.setCellWidget(row_count, 4, short_btn)
+            self.table.setCellWidget(row_count, 5, close_btn)
             row_count += 1
 
         self.get_positions_btn.setText("Get Positions")
