@@ -25,8 +25,10 @@ class MainWindow(QMainWindow):
         for _ in range(100):
 
             if len(positions) == 0:
-                time.sleep(0.01)
+                print(f'waiting')
+                time.sleep(0.1)
             else:
+                print(positions)
                 break
         self.positions = positions
         self.get_positions_btn.setEnabled(True)
