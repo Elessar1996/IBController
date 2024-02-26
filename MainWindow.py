@@ -26,10 +26,8 @@ class MainWindow(QMainWindow):
         for _ in range(100):
 
             if len(positions) == 0:
-                print(f'waiting')
                 time.sleep(0.1)
             else:
-                print(positions)
                 break
         self.positions = positions
         self.get_positions_btn.setEnabled(True)
@@ -52,10 +50,11 @@ class MainWindow(QMainWindow):
 
 
         for p in self.positions:
-            print(p)
             position_type = 'LONG' if float(p.position) > 0 else 'SHORT'
             self.table.insertRow(row_count)
             self.table.setItem(row_count, 0, QTableWidgetItem(p.ticker))
             self.table.setItem(row_count, 1, QTableWidgetItem(str(p.position)))
             self.table.setItem(row_count, 2, QTableWidgetItem(position_type))
             row_count += 1
+
+        self.get_positions_btn.setText("Get Positions")
