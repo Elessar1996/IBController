@@ -54,6 +54,7 @@ class MainWindow(QMainWindow):
         for p in self.positions:
             print(p)
             position_type = 'LONG' if float(p.position) > 0 else 'SHORT'
+            self.table.insertRow(row_count)
             self.table.setItem(row_count, 0, QTableWidgetItem(p.ticker))
             self.table.setItem(row_count, 1, QTableWidgetItem(str(p.position)))
             self.table.setItem(row_count, 2, QTableWidgetItem(position_type))
