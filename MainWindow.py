@@ -8,7 +8,7 @@ class MainWindow(QMainWindow):
 
         super(MainWindow, self).__init__()
         loadUi('MainWindow.ui', self)
-        self.ib = MainIB(id=random.randint(20, 30))
+        self.ib = MainIB(client_id=random.randint(20, 30))
 
         self.get_positions_btn.clicked.connect(self.get_positions_clicked)
 
