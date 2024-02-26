@@ -39,12 +39,12 @@
      </property>
     </column>
    </widget>
-   <widget class="QPushButton" name="get_positions_btn">
+   <widget class="QPushButton" name="display_positions_btn">
     <property name="geometry">
      <rect>
       <x>80</x>
-      <y>410</y>
-      <width>121</width>
+      <y>460</y>
+      <width>151</width>
       <height>51</height>
      </rect>
     </property>
@@ -57,7 +57,28 @@
      </font>
     </property>
     <property name="text">
-     <string>Get positions</string>
+     <string>Display Positions</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="get_positions_btn">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>390</y>
+      <width>151</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>12</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Get Positions</string>
     </property>
    </widget>
   </widget>
