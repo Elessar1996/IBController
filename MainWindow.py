@@ -49,15 +49,9 @@ class MainWindow(QMainWindow):
 
     def display_positions_clicked(self):
 
-
-
-        positions = self.ib.get_positions()
-
-
-
         row_count = self.table.rowCount()
 
-        for p in positions:
+        for p in self.positions:
             position_type = 'LONG' if float(p.position) > 0 else 'SHORT'
             self.table.setItem(row_count, 0, QTableWidgetItem(p.ticker))
             self.table.setItem(row_count, 1, QTableWidgetItem(p.position))
