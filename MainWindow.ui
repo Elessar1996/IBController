@@ -38,6 +38,21 @@
       <string>Type</string>
      </property>
     </column>
+    <column>
+     <property name="text">
+      <string/>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string/>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string/>
+     </property>
+    </column>
    </widget>
    <widget class="QPushButton" name="display_positions_btn">
     <property name="geometry">
