@@ -35,6 +35,8 @@ class MainWindow(QMainWindow):
 
     def start_getting_positions(self):
 
+        self.table.setRowCount(0)
+
         self.positions = []
 
         self.get_positions_btn.setText("Getting")
