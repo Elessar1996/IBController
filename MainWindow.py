@@ -53,10 +53,19 @@ class MainWindow(QMainWindow):
 
         for p in self.positions:
             position_type = 'LONG' if float(p.position) > 0 else 'SHORT'
+            long_btn = QPushButton()
+            long_btn.setText('LONG')
+            short_btn = QPushButton()
+            short_btn.setText('SHORT')
+            close_btn = QPushButton()
+            close_btn.setText('CLOSE')
             self.table.insertRow(row_count)
             self.table.setItem(row_count, 0, QTableWidgetItem(p.ticker))
             self.table.setItem(row_count, 1, QTableWidgetItem(str(p.position)))
             self.table.setItem(row_count, 2, QTableWidgetItem(position_type))
+            self.table.setItem(row_count, 3, long_btn)
+            self.table.setItem(row_count, 4, short_btn)
+            self.table.setItem(row_count, 5, close_btn)
             row_count += 1
 
         self.get_positions_btn.setText("Get Positions")
