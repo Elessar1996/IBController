@@ -36,6 +36,8 @@ class MainWindow(QMainWindow):
 
         self.buy_btn.clicked.connect(self.buy_clicked)
 
+        self.sell_btn.clicked.connect(self.sell_clicked)
+
     def get_positions_from_ib(self):
 
         positions = self.ib.get_positions()
@@ -79,11 +81,50 @@ class MainWindow(QMainWindow):
         except Exception as error:
             print(f'error: {error}')
 
+
+    def sell_clicked(self):
+
+        try:
+            row = self.selected_row
+
+            ticker = self.table.item(row, 0).text()
+            asset_type = self.asset_type_dict[self.table.item(row, 1).text()]
+            quantity = self.volume.value()
+
+            self.sell(ticker, asset_type, quantity)
+
+            self.table.item(row, 2).setText(str(float(self.table.item(row, 2).text()) - quantity))
+        except Exception as error:
+            print(f'error: {error}')
+
+    def sell(self, ticker, asset_type, quantity):
+
+        try:
+            contract = self.ib.make_contract(ticker, asset_type)
+            p = self.ib.get_market_data(
+                contract=contract,
+                data_types=[BID, ASK, HIGH, LOW, OPEN, CLOSE],
+                live_data=False
+            )
+            time.sleep(2)
+
+            price = p.close
+
+            self.ib_alternative.sell_ib(
+                ticker=ticker,
+                asset_type=asset_type,
+                quantity=quantity,
+                price=price
+            )
+        except Exception as error:
+            print(f'error: {error}')
+            traceback.print_exc()
+        return
+
+
     def buy(self, ticker, asset_type, quantity):
 
         try:
-
-            print(f'ticker in buy function: {ticker}')
 
             contract = self.ib.make_contract(ticker, asset_type)
 
