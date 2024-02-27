@@ -1,5 +1,6 @@
 import time
 import ibapi
+import datetime
 from ibapi.client import *
 from ibapi.wrapper import *
 from ibapi.contract import Contract
@@ -172,6 +173,27 @@ class Client(EClient):
         order.totalQuantity = quantity
 
         return order
+
+    def generate_order(self, quantity, price, action):
+
+        this_moment = datetime.datetime.now()
+
+        print(f'this moment: {this_moment}')
+
+        ninethiry = this_moment.replace(hour=9, minute=30, second=0)
+        print(f'nine thirty: {ninethiry}')
+        fourpm = this_moment.replace(hour=16, minute=0, second=0)
+        print(f'four pm: {fourpm}')
+
+        print(f'limit order condition: {this_moment < ninethiry or this_moment > fourpm}')
+
+        if this_moment < ninethiry or this_moment > fourpm:
+            order = self.create_order(limit_price=price, quantity=quantity, action=action)
+            return order
+        else:
+            order = self.create_market_order(quantity=quantity, action=action)
+            return order
+
 
 
 class MainIB(Wrapper, Client):
