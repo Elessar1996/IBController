@@ -8,13 +8,12 @@ import threading
 from Constants import *
 import traceback
 
-class MainWindow(QMainWindow):
 
+class MainWindow(QMainWindow):
     asset_type_dict = {
         'STK': STOCK,
         'CASH': CURRENCY
     }
-
 
     def __init__(self):
 
@@ -82,7 +81,6 @@ class MainWindow(QMainWindow):
             print(f'error: {error}')
             traceback.print_exc()
 
-
     def display_positions_clicked(self):
 
         row_count = self.table.rowCount()
@@ -100,7 +98,7 @@ class MainWindow(QMainWindow):
             long_btn.clicked.connect(lambda x: self.buy(
                 ticker=p.ticker,
                 asset_type=self.asset_type_dict[p.asset_type],
-                quantity=int(p.position)
+                quantity=float(p.position)
             ))
 
             self.table.insertRow(row_count)
