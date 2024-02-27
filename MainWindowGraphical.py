@@ -80,6 +80,7 @@ class MainWindow(QMainWindow):
         except Exception as error:
             print(f'error: {error}')
             traceback.print_exc()
+        return
 
     def display_positions_clicked(self):
 
@@ -88,7 +89,7 @@ class MainWindow(QMainWindow):
         for p in self.positions:
             position_type = 'LONG' if float(p.position) > 0 else 'SHORT'
             long_btn = QPushButton()
-            long_btn.setText(f'LONG {p.ticker}')
+            long_btn.setText(f'LONG')
 
             short_btn = QPushButton()
             short_btn.setText('SHORT')
