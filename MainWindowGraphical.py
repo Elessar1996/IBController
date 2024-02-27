@@ -88,7 +88,7 @@ class MainWindow(QMainWindow):
         for p in self.positions:
             position_type = 'LONG' if float(p.position) > 0 else 'SHORT'
             long_btn = QPushButton()
-            long_btn.setText('LONG')
+            long_btn.setText(f'LONG {p.ticker}')
 
             short_btn = QPushButton()
             short_btn.setText('SHORT')
