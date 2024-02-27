@@ -32,6 +32,10 @@ class MainWindow(QMainWindow):
 
         self.table.itemClicked.connect(self.item_clicked)
 
+        self.selected_row = None
+
+        self.buy_btn.clicked.connect(self.buy_clicked)
+
     def get_positions_from_ib(self):
 
         positions = self.ib.get_positions()
@@ -58,6 +62,16 @@ class MainWindow(QMainWindow):
 
         t = threading.Thread(target=self.get_positions_from_ib)
         t.start()
+
+    def buy_clicked(self):
+
+        row = self.selected_row
+
+        ticker = self.table.item(row, 0)
+        asset_type = self.table.item(row, 1)
+        quantity = self.table.item(row, 2)
+
+        self.buy(ticker, asset_type, quantity)
 
     def buy(self, ticker, asset_type, quantity):
 
@@ -88,36 +102,20 @@ class MainWindow(QMainWindow):
             traceback.print_exc()
         return
 
-    def fill_table_dict(self, ticker, position_size, asset_type, long_btn, short_btn, close_btn):
+    def fill_table_dict(self, ticker, position_size, asset_type):
 
         self.table_items[ticker] = {
             'position_size': position_size,
             'asset_type': asset_type,
-            'long_btn': long_btn,
-            'short_btn': short_btn,
-            'close_btn': close_btn
+
         }
 
-    def connect_buttons_to_functions(self):
-
-        print(self.table_items)
-
-        for ticker in self.table_items.keys():
-            print(f'ticker: {ticker}')
-            self.table_items[ticker]['long_btn'].clicked.connect(lambda x:
-                                                                 self.buy(
-                                                                     ticker=ticker,
-                                                                     asset_type=self.asset_type_dict[self.table_items[ticker] \
-                                                                         ['asset_type']],
-                                                                     quantity=abs(self.table_items[ticker] \
-                                                                         ['position_size'])
-                                                                 )
-                                                                 )
     def item_clicked(self, it):
 
         print(it.text())
         print(it.row())
 
+        self.selected_row = it.row()
 
     def display_positions_clicked(self):
 
@@ -125,37 +123,19 @@ class MainWindow(QMainWindow):
 
         for p in self.positions:
             position_type = 'LONG' if float(p.position) > 0 else 'SHORT'
-            long_btn = QPushButton()
-            long_btn.setText(f'LONG')
 
-            short_btn = QPushButton()
-            short_btn.setText('SHORT')
-            close_btn = QPushButton()
-            close_btn.setText('CLOSE')
-
-            # long_btn.clicked.connect(lambda x: self.buy(
-            #     ticker=p.ticker,
-            #     asset_type=self.asset_type_dict[p.asset_type],
-            #     quantity=float(p.position)
-            # ))
             self.table.insertRow(row_count)
             self.table.setItem(row_count, 0, QTableWidgetItem(p.ticker))
             self.table.setItem(row_count, 1, QTableWidgetItem(p.asset_type))
             self.table.setItem(row_count, 2, QTableWidgetItem(str(p.position)))
             self.table.setItem(row_count, 3, QTableWidgetItem(position_type))
-            self.table.setCellWidget(row_count, 4, long_btn)
-            self.table.setCellWidget(row_count, 5, short_btn)
-            self.table.setCellWidget(row_count, 6, close_btn)
 
             self.fill_table_dict(
                 ticker=p.ticker,
                 position_size=p.position,
                 asset_type=p.asset_type,
-                long_btn=long_btn,
-                short_btn=short_btn,
-                close_btn=close_btn
+
             )
 
             row_count += 1
-        self.connect_buttons_to_functions()
         self.get_positions_btn.setText("Get Positions")
