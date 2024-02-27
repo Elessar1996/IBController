@@ -5,9 +5,15 @@ from IBAlternative import IBAlternative
 import random
 import time
 import threading
-
+from Constants import *
 
 class MainWindow(QMainWindow):
+
+    asset_type_dict = {
+        'STK': STOCK,
+        'CASH': CURRENCY
+    }
+
 
     def __init__(self):
 
@@ -49,6 +55,29 @@ class MainWindow(QMainWindow):
         t = threading.Thread(target=self.get_positions_from_ib)
         t.start()
 
+    def buy(self, ticker, asset_type, quantity):
+
+        contract = self.ib.make_contract(ticker, asset_type)
+
+        p = self.ib.get_market_data(
+            contract=contract,
+            data_types=[BID, ASK, HIGH, LOW, OPEN, CLOSE],
+            live_data=False
+        )
+
+        time.sleep(2)
+
+        price = p.close
+
+        self.ib_alternative.ib_buy(
+            ticker=ticker,
+            asset_type=asset_type,
+            quantity=quantity,
+            price=price
+        )
+
+
+
     def display_positions_clicked(self):
 
         row_count = self.table.rowCount()
@@ -57,10 +86,18 @@ class MainWindow(QMainWindow):
             position_type = 'LONG' if float(p.position) > 0 else 'SHORT'
             long_btn = QPushButton()
             long_btn.setText('LONG')
+
             short_btn = QPushButton()
             short_btn.setText('SHORT')
             close_btn = QPushButton()
             close_btn.setText('CLOSE')
+
+            long_btn.clicked.connect(lambda x: self.buy(
+                ticker=p.ticker,
+                asset_type=p.asset_type,
+                quantity=int(p.position)
+            ))
+
             self.table.insertRow(row_count)
             self.table.setItem(row_count, 0, QTableWidgetItem(p.ticker))
             self.table.setItem(row_count, 1, QTableWidgetItem(str(p.position)))
