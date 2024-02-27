@@ -98,19 +98,30 @@ class MainWindow(QMainWindow):
             close_btn = QPushButton()
             close_btn.setText('CLOSE')
 
-            long_btn.clicked.connect(lambda x: self.buy(
-                ticker=p.ticker,
-                asset_type=self.asset_type_dict[p.asset_type],
-                quantity=float(p.position)
-            ))
+            # long_btn.clicked.connect(lambda x: self.buy(
+            #     ticker=p.ticker,
+            #     asset_type=self.asset_type_dict[p.asset_type],
+            #     quantity=float(p.position)
+            # ))
 
             self.table.insertRow(row_count)
             self.table.setItem(row_count, 0, QTableWidgetItem(p.ticker))
-            self.table.setItem(row_count, 1, QTableWidgetItem(str(p.position)))
-            self.table.setItem(row_count, 2, QTableWidgetItem(position_type))
-            self.table.setCellWidget(row_count, 3, long_btn)
-            self.table.setCellWidget(row_count, 4, short_btn)
-            self.table.setCellWidget(row_count, 5, close_btn)
+            self.table.setItem(row_count, 1, QTableWidgetItem(p.asset_type))
+            self.table.setItem(row_count, 2, QTableWidgetItem(str(p.position)))
+            self.table.setItem(row_count, 3, QTableWidgetItem(position_type))
+            self.table.setCellWidget(row_count, 4, long_btn)
+            self.table.setCellWidget(row_count, 5, short_btn)
+            self.table.setCellWidget(row_count, 6, close_btn)
             row_count += 1
+
+        for row in range(self.table.rowCount()):
+
+            long_btn = self.table.item(row, 4)
+            long_btn.clicked.connect(lambda x:
+                                     self.ib_alternative.ib_buy(
+                                         ticker=str(self.table.item(row, 0)),
+                                         asset_type=self.asset_type_dict[self.table.item(row, 1)],
+                                         quantity=float(self.table.item(row, 2))
+                                     ))
 
         self.get_positions_btn.setText("Get Positions")
