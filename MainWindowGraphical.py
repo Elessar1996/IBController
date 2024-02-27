@@ -59,6 +59,8 @@ class MainWindow(QMainWindow):
 
         try:
 
+            print(f'ticker in buy function: {ticker}')
+
             contract = self.ib.make_contract(ticker, asset_type)
 
             p = self.ib.get_market_data(
