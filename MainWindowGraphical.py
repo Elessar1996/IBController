@@ -101,6 +101,7 @@ class MainWindow(QMainWindow):
         print(self.table_items)
 
         for ticker in self.table_items.keys():
+            print(f'ticker: {ticker}')
             self.table_items[ticker]['long_btn'].clicked.connect(lambda x:
                                                                  self.buy(
                                                                      ticker=ticker,
