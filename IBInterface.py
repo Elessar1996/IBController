@@ -185,7 +185,7 @@ class MainIB(Wrapper, Client):
 
     def main(self):
 
-        contract = self.make_contract(ticker='eur', ticker_type='currency')
+        contract = self.make_contract(ticker='EUR', ticker_type='currency')
         # order = self.create_order(limit_price=30305, action=BUY, quantity=10000)
         # self.placeOrder(orderId=self.get_order_id(),
         #                 contract=contract,
@@ -426,6 +426,13 @@ class MainIB(Wrapper, Client):
         self.cancelPositions()
 
         return self.positions
+    #
+    # def main(self):
+    #
+    #     positions = self.get_positions()
+    #
+    #     for p in positions:
+    #         print(p)
 
 
 
