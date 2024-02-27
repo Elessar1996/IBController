@@ -57,25 +57,28 @@ class MainWindow(QMainWindow):
 
     def buy(self, ticker, asset_type, quantity):
 
-        contract = self.ib.make_contract(ticker, asset_type)
+        try:
 
-        p = self.ib.get_market_data(
-            contract=contract,
-            data_types=[BID, ASK, HIGH, LOW, OPEN, CLOSE],
-            live_data=False
-        )
+            contract = self.ib.make_contract(ticker, asset_type)
 
-        time.sleep(2)
+            p = self.ib.get_market_data(
+                contract=contract,
+                data_types=[BID, ASK, HIGH, LOW, OPEN, CLOSE],
+                live_data=False
+            )
 
-        price = p.close
+            time.sleep(2)
 
-        self.ib_alternative.ib_buy(
-            ticker=ticker,
-            asset_type=asset_type,
-            quantity=quantity,
-            price=price
-        )
+            price = p.close
 
+            self.ib_alternative.ib_buy(
+                ticker=ticker,
+                asset_type=asset_type,
+                quantity=quantity,
+                price=price
+            )
+        except Exception as error:
+            print(f'error: {error}')
 
 
     def display_positions_clicked(self):
