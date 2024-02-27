@@ -116,6 +116,7 @@ class MainWindow(QMainWindow):
     def item_clicked(self, it):
 
         print(it.text())
+        print(it.row())
 
 
     def display_positions_clicked(self):
