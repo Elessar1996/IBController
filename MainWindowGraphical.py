@@ -38,6 +38,8 @@ class MainWindow(QMainWindow):
 
         self.sell_btn.clicked.connect(self.sell_clicked)
 
+        self.close_btn.clicked.connect(self.close_position)
+
     def get_positions_from_ib(self):
 
         positions = self.ib.get_positions()
@@ -81,6 +83,34 @@ class MainWindow(QMainWindow):
         except Exception as error:
             print(f'error: {error}')
 
+    def close_position(self):
+
+        try:
+
+            row = self.selected_row
+
+            ticker = self.table.item(row, 0).text()
+            asset_type = self.asset_type_dict[self.table.item(row, 1).text()]
+            quantity = float(self.table.item(row, 2).text())
+
+            if quantity > 0:
+
+                self.sell(
+                    ticker=ticker,
+                    asset_type=asset_type,
+                    quantity=quantity
+                )
+            else:
+                self.buy(
+                    ticker=ticker,
+                    asset_type=asset_type,
+                    quantity=quantity
+                )
+        except Exception as error:
+            print(f'error: {error}')
+
+
+
 
     def sell_clicked(self):
 
@@ -120,7 +150,6 @@ class MainWindow(QMainWindow):
             print(f'error: {error}')
             traceback.print_exc()
         return
-
 
     def buy(self, ticker, asset_type, quantity):
 
