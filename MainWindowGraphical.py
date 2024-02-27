@@ -52,9 +52,13 @@ class MainWindow(QMainWindow):
                 break
         self.positions = positions
         self.get_positions_btn.setEnabled(True)
-        self.get_positions_btn.setText("Done")
+        self.get_positions_btn.setText("Get Positions")
+
+        self.display_positions_btn.setEnabled(True)
 
     def start_getting_positions(self):
+
+
 
         self.table.setRowCount(0)
 
@@ -110,9 +114,6 @@ class MainWindow(QMainWindow):
             self.table.item(row, 2).setText(str(0))
         except Exception as error:
             print(f'error: {error}')
-
-
-
 
     def sell_clicked(self):
 
