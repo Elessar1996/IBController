@@ -30,6 +30,8 @@ class MainWindow(QMainWindow):
 
         self.table_items = {}
 
+        self.table.itemClicked.connect(self.item_clicked)
+
     def get_positions_from_ib(self):
 
         positions = self.ib.get_positions()
@@ -111,6 +113,10 @@ class MainWindow(QMainWindow):
                                                                          ['position_size'])
                                                                  )
                                                                  )
+    def item_clicked(self, it):
+
+        print(it.text())
+
 
     def display_positions_clicked(self):
 
