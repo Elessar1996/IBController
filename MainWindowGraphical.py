@@ -94,7 +94,7 @@ class MainWindow(QMainWindow):
 
             long_btn.clicked.connect(lambda x: self.buy(
                 ticker=p.ticker,
-                asset_type=p.asset_type,
+                asset_type=self.asset_type_dict[p.asset_type],
                 quantity=int(p.position)
             ))
 
