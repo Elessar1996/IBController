@@ -30,6 +30,11 @@
     </column>
     <column>
      <property name="text">
+      <string>Asset Type</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
       <string>Size </string>
      </property>
     </column>
