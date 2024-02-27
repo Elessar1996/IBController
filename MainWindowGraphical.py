@@ -106,6 +106,8 @@ class MainWindow(QMainWindow):
                     asset_type=asset_type,
                     quantity=quantity
                 )
+
+            self.table.item(row, 2).setText(str(0))
         except Exception as error:
             print(f'error: {error}')
 
