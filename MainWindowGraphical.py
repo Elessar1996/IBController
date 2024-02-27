@@ -75,7 +75,7 @@ class MainWindow(QMainWindow):
 
             self.buy(ticker, asset_type, quantity)
 
-            self.table.item(row, 2).setText(str(self.table.item(row, 2).text() + quantity))
+            self.table.item(row, 2).setText(str(float(self.table.item(row, 2).text()) + quantity))
         except Exception as error:
             print(f'error: {error}')
 
