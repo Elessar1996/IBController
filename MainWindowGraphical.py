@@ -70,7 +70,7 @@ class MainWindow(QMainWindow):
             row = self.selected_row
 
             ticker = self.table.item(row, 0).text()
-            asset_type = self.asset_type_dict(self.table.item(row, 1).text())
+            asset_type = self.asset_type_dict[self.table.item(row, 1).text()]
             quantity = float(self.table.item(row, 2).text())
 
             self.buy(ticker, asset_type, quantity)
