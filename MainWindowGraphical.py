@@ -102,10 +102,10 @@ class MainWindow(QMainWindow):
             self.table_items[ticker]['long_btn'].clicked.connect(lambda x:
                                                                  self.buy(
                                                                      ticker=ticker,
-                                                                     asset_type=self.table_items[ticker] \
-                                                                         ['asset_type'],
-                                                                     quantity=self.table_items[ticker] \
-                                                                         ['position_size']
+                                                                     asset_type=self.asset_type_dict[self.table_items[ticker] \
+                                                                         ['asset_type']],
+                                                                     quantity=abs(self.table_items[ticker] \
+                                                                         ['position_size'])
                                                                  )
                                                                  )
 
