@@ -6,6 +6,7 @@ import random
 import time
 import threading
 from Constants import *
+import traceback
 
 class MainWindow(QMainWindow):
 
@@ -79,6 +80,7 @@ class MainWindow(QMainWindow):
             )
         except Exception as error:
             print(f'error: {error}')
+            traceback.print_exc()
 
 
     def display_positions_clicked(self):
