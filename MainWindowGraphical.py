@@ -147,5 +147,5 @@ class MainWindow(QMainWindow):
             )
 
             row_count += 1
-
+        self.connect_buttons_to_functions()
         self.get_positions_btn.setText("Get Positions")
