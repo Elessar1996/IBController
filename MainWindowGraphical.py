@@ -74,6 +74,9 @@ class MainWindow(QMainWindow):
             quantity = self.volume.value()
 
             self.buy(ticker, asset_type, quantity)
+
+            self.start_getting_positions()
+            self.display_positions_clicked()
         except Exception as error:
             print(f'error: {error}')
 
