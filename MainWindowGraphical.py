@@ -98,6 +98,8 @@ class MainWindow(QMainWindow):
 
     def connect_buttons_to_functions(self):
 
+        print(self.table_items)
+
         for ticker in self.table_items.keys():
             self.table_items[ticker]['long_btn'].clicked.connect(lambda x:
                                                                  self.buy(
