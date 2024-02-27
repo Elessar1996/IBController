@@ -65,13 +65,17 @@ class MainWindow(QMainWindow):
 
     def buy_clicked(self):
 
-        row = self.selected_row
+        try:
 
-        ticker = self.table.item(row, 0).text()
-        asset_type = self.asset_type_dict(self.table.item(row, 1).text())
-        quantity = float(self.table.item(row, 2).text())
+            row = self.selected_row
 
-        self.buy(ticker, asset_type, quantity)
+            ticker = self.table.item(row, 0).text()
+            asset_type = self.asset_type_dict(self.table.item(row, 1).text())
+            quantity = float(self.table.item(row, 2).text())
+
+            self.buy(ticker, asset_type, quantity)
+        except Exception as error:
+            print(f'error: {error}')
 
     def buy(self, ticker, asset_type, quantity):
 
