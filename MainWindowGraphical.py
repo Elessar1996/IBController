@@ -7,6 +7,7 @@ import time
 import threading
 from Constants import *
 import traceback
+import subprocess
 
 
 class MainWindow(QMainWindow):
@@ -40,12 +41,11 @@ class MainWindow(QMainWindow):
 
         self.close_btn.clicked.connect(self.close_position)
 
+        self.server_btn.clicked.connect(self.run_terminal)
+
     def get_positions_from_ib(self):
-
         positions = self.ib.get_positions()
-
         for _ in range(100):
-
             if len(positions) == 0:
                 time.sleep(0.1)
             else:
@@ -53,8 +53,11 @@ class MainWindow(QMainWindow):
         self.positions = positions
         self.get_positions_btn.setEnabled(True)
         self.get_positions_btn.setText("Get Positions")
-
         self.display_positions_btn.setEnabled(True)
+
+    def run_terminal(self):
+
+        subprocess.call('start /wait python RunNgRok.py', shell=True)
 
     def start_getting_positions(self):
 
