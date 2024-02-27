@@ -60,6 +60,9 @@
     </column>
    </widget>
    <widget class="QPushButton" name="display_positions_btn">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>80</x>
