@@ -71,7 +71,7 @@ class MainWindow(QMainWindow):
 
             ticker = self.table.item(row, 0).text()
             asset_type = self.asset_type_dict[self.table.item(row, 1).text()]
-            quantity = float(self.table.item(row, 2).text())
+            quantity = self.volume.value()
 
             self.buy(ticker, asset_type, quantity)
         except Exception as error:
