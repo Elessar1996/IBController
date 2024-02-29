@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>667</width>
-    <height>600</height>
+    <height>668</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -151,7 +151,7 @@
      <rect>
       <x>360</x>
       <y>390</y>
-      <width>91</width>
+      <width>111</width>
       <height>51</height>
      </rect>
     </property>
@@ -204,11 +204,32 @@
      </item>
     </layout>
    </widget>
-   <widget class="QPushButton" name="server_btn">
+   <widget class="QPushButton" name="ngrok_btn">
     <property name="geometry">
      <rect>
       <x>360</x>
       <y>460</y>
+      <width>111</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>12</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>NgRok</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="server_btn">
+    <property name="geometry">
+     <rect>
+      <x>250</x>
+      <y>520</y>
       <width>91</width>
       <height>51</height>
      </rect>
@@ -223,6 +244,48 @@
     </property>
     <property name="text">
      <string>Server</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="stop_ngrok_btn">
+    <property name="geometry">
+     <rect>
+      <x>360</x>
+      <y>520</y>
+      <width>111</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>12</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Stop NgRok</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="stop_server_btn">
+    <property name="geometry">
+     <rect>
+      <x>360</x>
+      <y>580</y>
+      <width>111</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>12</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Stop Server</string>
     </property>
    </widget>
   </widget>
