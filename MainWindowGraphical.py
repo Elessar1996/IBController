@@ -8,7 +8,8 @@ import threading
 from Constants import *
 import traceback
 import subprocess
-
+import os
+import signal
 
 class MainWindow(QMainWindow):
     asset_type_dict = {
@@ -41,7 +42,10 @@ class MainWindow(QMainWindow):
 
         self.close_btn.clicked.connect(self.close_position)
 
-        self.server_btn.clicked.connect(self.run_terminal)
+        self.ngrok_btn.clicked.connect(self.start_running_ngrok)
+
+        self.stop_ngrok_btn.clicked.connect(self.stop_ngrok)
+        self.server_btn.clicked.connect(self.start_running_server)
 
     def get_positions_from_ib(self):
         positions = self.ib.get_positions()
@@ -55,9 +59,34 @@ class MainWindow(QMainWindow):
         self.get_positions_btn.setText("Get Positions")
         self.display_positions_btn.setEnabled(True)
 
-    def run_terminal(self):
+    def start_running_server(self):
+        t = threading.Thread(target=self.run_server)
+        t.start()
+
+    def run_server(self):
+        subprocess.call('start /wait python RunFlask.py', shell=True)
+
+    def start_running_ngrok(self):
+
+        t = threading.Thread(target=self.run_ngrok)
+        t.start()
+
+
+
+    def run_ngrok(self):
 
         subprocess.call('start /wait python RunNgRok.py', shell=True)
+
+
+    def stop_ngrok(self):
+        try:
+            from RunNgRok import p
+
+            os.kill(p, signal.SIGTERM)
+
+        except Exception as error:
+
+            print(f'error: {error}')
 
     def start_getting_positions(self):
 
