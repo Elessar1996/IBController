@@ -11,6 +11,7 @@ import subprocess
 import os
 import signal
 
+
 class MainWindow(QMainWindow):
     asset_type_dict = {
         'STK': STOCK,
@@ -22,29 +23,17 @@ class MainWindow(QMainWindow):
         super(MainWindow, self).__init__()
         loadUi('MainWindow.ui', self)
         self.ib = MainIB(client_id=random.randint(20, 30))
-
         self.ib_alternative = IBAlternative(ib=self.ib)
-
         self.display_positions_btn.clicked.connect(self.display_positions_clicked)
         self.get_positions_btn.clicked.connect(self.start_getting_positions)
-
         self.positions = None
-
         self.table_items = {}
-
         self.table.itemClicked.connect(self.item_clicked)
-
         self.selected_row = None
-
         self.buy_btn.clicked.connect(self.buy_clicked)
-
         self.sell_btn.clicked.connect(self.sell_clicked)
-
         self.close_btn.clicked.connect(self.close_position)
-
         self.ngrok_btn.clicked.connect(self.start_running_ngrok)
-
-        self.stop_ngrok_btn.clicked.connect(self.stop_ngrok)
         self.server_btn.clicked.connect(self.start_running_server)
 
     def get_positions_from_ib(self):
@@ -71,26 +60,11 @@ class MainWindow(QMainWindow):
         t = threading.Thread(target=self.run_ngrok)
         t.start()
 
-
-
     def run_ngrok(self):
 
         subprocess.call('start /wait python RunNgRok.py', shell=True)
 
-
-    def stop_ngrok(self):
-        try:
-            from RunNgRok import p
-
-            os.kill(p, signal.SIGTERM)
-
-        except Exception as error:
-
-            print(f'error: {error}')
-
     def start_getting_positions(self):
-
-
 
         self.table.setRowCount(0)
 
@@ -134,13 +108,13 @@ class MainWindow(QMainWindow):
                 self.sell(
                     ticker=ticker,
                     asset_type=asset_type,
-                    quantity=quantity
+                    quantity=abs(quantity)
                 )
             else:
                 self.buy(
                     ticker=ticker,
                     asset_type=asset_type,
-                    quantity=quantity
+                    quantity=abs(quantity)
                 )
 
             self.table.item(row, 2).setText(str(0))
