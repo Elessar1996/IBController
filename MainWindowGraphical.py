@@ -79,6 +79,9 @@ class MainWindow(QMainWindow):
 
     def buy_clicked(self):
 
+        if self.volume.value == 0:
+            return
+
         try:
 
             row = self.selected_row
@@ -122,6 +125,9 @@ class MainWindow(QMainWindow):
             print(f'error: {error}')
 
     def sell_clicked(self):
+
+        if self.volume.value == 0:
+            return
 
         try:
             row = self.selected_row
