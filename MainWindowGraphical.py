@@ -111,7 +111,7 @@ class MainWindow(QMainWindow):
                 self.buy(
                     ticker=ticker,
                     asset_type=asset_type,
-                    quantity=quantity
+                    quantity=abs(quantity)
                 )
 
             self.table.item(row, 2).setText(str(0))
