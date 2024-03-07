@@ -30,9 +30,11 @@ class AlgorithmicTrader(Trader):
 
     def is_stop_loss_triggered(self, price):
 
-        if abs(self.measure_loss(price=price)) >= self.stop_loss:
-            print(f'stop loss triggered for the ticker {self.ticker}')
-            self.allowed = False
+        if self.measure_loss(price=price) is not None:
+
+            if abs(self.measure_loss(price=price)) >= self.stop_loss:
+                print(f'stop loss triggered for the ticker {self.ticker}')
+                self.allowed = False
 
     def multiple_sma(self, list_smas, price):
 
