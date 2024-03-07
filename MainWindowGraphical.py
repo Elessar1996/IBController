@@ -53,10 +53,8 @@ class MainWindow(QMainWindow):
         t.start()
 
     def run_server(self):
-        try:
-            subprocess.call('start /wait python RunFlask.py', shell=True)
-        except Exception as e:
-            print(f'error: {e}')
+
+        subprocess.call(f'start /wait python RunFlask.py {self.leverage.value()} {self.stop_loss.value()}', shell=True)
 
     def start_running_ngrok(self):
 
