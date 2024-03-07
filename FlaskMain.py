@@ -89,7 +89,7 @@ def generate_command(ticker, trade_args, price):
         return traders[ticker].multiple_sma(trade_args, price)
     else:
         traders[ticker] = AlgorithmicTrader(tickness=tickness, begining=begining, ticker=ticker,
-                                            stop_loss=stop_loss)
+                                            stop_loss=float(stop_loss))
         return traders[ticker].multiple_sma(trade_args, price)
 
 
