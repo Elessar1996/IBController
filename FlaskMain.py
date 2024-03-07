@@ -81,16 +81,16 @@ def run_command(command, ticker, price, quantity, asset_type):
 
         return None
 
-def generate_command(ticker, trade_args):
+def generate_command(ticker, trade_args, price):
     global traders
     global stop_loss
 
     if ticker in traders.keys():
-        return traders[ticker].multiple_sma(trade_args)
+        return traders[ticker].multiple_sma(trade_args, price)
     else:
         traders[ticker] = AlgorithmicTrader(tickness=tickness, begining=begining, ticker=ticker,
                                             stop_loss=stop_loss)
-        return traders[ticker].multiple_sma(trade_args)
+        return traders[ticker].multiple_sma(trade_args, price)
 
 
 def insert_data_table(ticker, tuple_of_values):
@@ -189,7 +189,7 @@ def webhook():
     trade_arg = [float(i[1]) for i in sorted_smas]
     print(f'trade args: {trade_arg}')
 
-    command = generate_command(json_dict['ticker'], trade_arg)
+    command = generate_command(json_dict['ticker'], trade_arg, price)
 
     run_command(
         command=command,
