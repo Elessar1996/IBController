@@ -1,14 +1,21 @@
 from flask import Flask, request
 from Constants import *
 from db_utils import *
-from Central import Trader
+# from Central import Trader
+from AlgorithmicTrader import AlgorithmicTrader
 from IBInterface import MainIB
 from IBAlternative import IBAlternative
+import sys
 
+
+print(f'beginning of the file')
 app = Flask(__name__)
 data = ["NOTHING"]
 
 QUANTITY = 100
+
+leverage = None
+stop_loss = None
 
 # ib = IBAlternative(
 #     ib=MainIB(client_id=13)
@@ -22,12 +29,26 @@ tickness = 5
 first_time = True
 
 
-# delete_all()
-# drop_all_tables()
-# create_db(db_name=DATABASE_NAME)
+delete_all()
+drop_all_tables()
+create_db(db_name=DATABASE_NAME)
 
 
 # trader = Trader(5, 5)
+
+# QUANTITY = 100
+#
+# # ib = IBAlternative(
+# #     ib=MainIB(client_id=13)
+# # )
+# ib = None
+# traders = {}
+#
+# begining = 5
+# tickness = 5
+#
+# first_time = True
+# data = ["NOTHING"]
 
 
 def run_command(command, ticker, price, quantity, asset_type):
@@ -62,11 +83,13 @@ def run_command(command, ticker, price, quantity, asset_type):
 
 def generate_command(ticker, trade_args):
     global traders
+    global stop_loss
 
     if ticker in traders.keys():
         return traders[ticker].multiple_sma(trade_args)
     else:
-        traders[ticker] = Trader(tickness=tickness, begining=begining, ticker=ticker)
+        traders[ticker] = AlgorithmicTrader(tickness=tickness, begining=begining, ticker=ticker,
+                                            stop_loss=stop_loss)
         return traders[ticker].multiple_sma(trade_args)
 
 
@@ -80,6 +103,7 @@ def insert_data_table(ticker, tuple_of_values):
 
 
 def create_data_table(ticker):
+
     all_tables = get_list_of_all_tables()
 
     print(all_tables)
@@ -186,3 +210,16 @@ def webhook():
     data.append(json_dict)
 
     return json_dict
+
+
+if __name__ == '__main__':
+    print(f'hi')
+    app.config['leverage'] = sys.argv[1]
+    app.config['stop_loss'] = sys.argv[2]
+    leverage = app.config['leverage']
+    stop_loss = app.config['stop_loss']
+    print(leverage, stop_loss)
+    app.run()
+
+
+

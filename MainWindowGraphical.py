@@ -53,7 +53,8 @@ class MainWindow(QMainWindow):
         t.start()
 
     def run_server(self):
-        subprocess.call('start /wait python RunFlask.py', shell=True)
+
+        subprocess.call(f'start /wait python RunFlask.py {self.leverage.value()} {self.stop_loss.value()}', shell=True)
 
     def start_running_ngrok(self):
 
@@ -79,7 +80,7 @@ class MainWindow(QMainWindow):
 
     def buy_clicked(self):
 
-        if self.volume.value == 0:
+        if self.volume.value() == 0:
             return
 
         try:
@@ -126,7 +127,7 @@ class MainWindow(QMainWindow):
 
     def sell_clicked(self):
 
-        if self.volume.value == 0:
+        if self.volume.value() == 0:
             return
 
         try:
