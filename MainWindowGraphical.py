@@ -82,7 +82,7 @@ class MainWindow(QMainWindow):
 
     def buy_clicked(self):
 
-        if self.volume.value == 0:
+        if self.volume.value() == 0:
             return
 
         try:
@@ -129,7 +129,7 @@ class MainWindow(QMainWindow):
 
     def sell_clicked(self):
 
-        if self.volume.value == 0:
+        if self.volume.value() == 0:
             return
 
         try:
