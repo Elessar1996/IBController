@@ -102,3 +102,10 @@ class AlgorithmicTrader(Trader):
                     return "close short"
                 else:
                     return "hold"
+        else:
+            if self.in_long:
+                self.in_long = False
+                return 'close long'
+            elif self.in_short:
+                self.in_short = False
+                return 'close short'
