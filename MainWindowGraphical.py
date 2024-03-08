@@ -35,6 +35,7 @@ class MainWindow(QMainWindow):
         self.close_btn.clicked.connect(self.close_position)
         self.ngrok_btn.clicked.connect(self.start_running_ngrok)
         self.server_btn.clicked.connect(self.start_running_server)
+        self.stop_loss.setValue(1.0)
 
     def get_positions_from_ib(self):
         positions = self.ib.get_positions()
