@@ -15,7 +15,7 @@ class IBAlternative:
         order = self.ib.generate_order(price=price, quantity=quantity, action=BUY)
         self.place_order_ib(contract=c, order=order)
 
-    def sell_ib(self, ticker, asset_type, quantity, price):
+    def ib_sell(self, ticker, asset_type, quantity, price):
 
         c = self.ib.make_contract(ticker=ticker.upper(), ticker_type=asset_type)
         order = self.ib.generate_order(price=price, quantity=quantity, action=SELL)
