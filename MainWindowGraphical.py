@@ -8,8 +8,7 @@ import threading
 from Constants import *
 import traceback
 import subprocess
-import os
-import signal
+
 
 
 class MainWindow(QMainWindow):
@@ -55,7 +54,10 @@ class MainWindow(QMainWindow):
 
     def run_server(self):
 
-        subprocess.call(f'start /wait python RunFlask.py {self.leverage.value()} {self.stop_loss.value()}', shell=True)
+        cdv_use = 'use_cdv' if self.cdv_checkbox.isChecked() else 'None'
+        cvd_use = 'use_cvd' if self.cvd_checkbox.isChecked() else 'None'
+
+        subprocess.call(f'start /wait python RunFlask.py {self.leverage.value()} {self.stop_loss.value()} {cdv_use} {cvd_use}', shell=True)
 
     def start_running_ngrok(self):
 
