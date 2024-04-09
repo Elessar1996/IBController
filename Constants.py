@@ -50,6 +50,7 @@ SELL = 'SELL'
 LAST_PRICE = 'last_price'
 OPEN = 'open'
 CLOSE = 'close'
+BID_SIZE = 'bid_size'
 
 INTERACTIVE_BROKER = 'interactive broker'
 LITEFOREX = 'liteforex'
