@@ -271,7 +271,8 @@ class MainIB(Wrapper, Client):
         req_id = self.get_unique_id()
         self.market_data[req_id] = PriceInformation(contract)
         self.reqMarketDataType(1) if live_data else self.reqMarketDataType(3)
-
+        self.reqMarketDataType(0)
+        self.reqMarketDataType(3)
         self.reqMktData(reqId=req_id, contract=contract, genericTickList="", snapshot=True, regulatorySnapshot=False,
                         mktDataOptions=[])
 
