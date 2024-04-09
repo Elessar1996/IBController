@@ -106,6 +106,20 @@ class Wrapper(EWrapper):
             setattr(self.market_data[reqId], data_type, price)
         except KeyError:
             pass
+
+    def tickSize(self, reqId:TickerId, tickType:TickType, size:int):
+        data_type = None
+        print(f'size: {size}')
+        if tickType == 0:
+            data_type = BID_SIZE
+        elif tickType == 3:
+            data_type = ASK_SIZE
+
+        try:
+            setattr(self.market_data[reqId], data_type, size)
+        except Exception as e:
+            print(e)
+
     def realtimeBar(self, reqId: TickerId, time:int, open_: float, high: float, low: float, close: float,
                         volume: int, wap: float, count: int):
 
@@ -211,12 +225,12 @@ class MainIB(Wrapper, Client):
 
     def main(self):
 
-        contract = self.make_contract(ticker='TSLA', ticker_type='stock')
+        contract = self.make_contract(ticker='EUR', ticker_type='currency')
         # order = self.create_order(limit_price=30305, action=BUY, quantity=10000)
         # self.placeOrder(orderId=self.get_order_id(),
         #                 contract=contract,
         #                 order=order)
-        p = self.get_market_data(contract=contract, data_types=[BID, ASK, HIGH, LOW, OPEN, CLOSE, BID_SIZE, ASK_SIZE], live_data=False)
+        p = self.get_market_data(contract=contract, data_types=[BID, ASK, HIGH, LOW, OPEN, CLOSE], live_data=False)
         print(p)
         # self.get_total_pnl()
         #
@@ -271,6 +285,7 @@ class MainIB(Wrapper, Client):
         req_id = self.get_unique_id()
         self.market_data[req_id] = PriceInformation(contract)
         self.reqMarketDataType(1) if live_data else self.reqMarketDataType(3)
+
         self.reqMktData(reqId=req_id, contract=contract, genericTickList="", snapshot=True, regulatorySnapshot=False,
                         mktDataOptions=[])
 
