@@ -84,10 +84,14 @@ class Wrapper(EWrapper):
         print(f'price: {price} -- {TickTypeEnum.to_str(tickType)}')
 
         data_type = None
-        if tickType == 1:
+        if tickType == 0:
+            data_type = BID_SIZE
+        elif tickType == 1:
             data_type = BID
         elif tickType == 2:
             data_type = ASK
+        elif tickType == 3:
+            data_type = ASK_SIZE
         elif tickType == 6:
             data_type = HIGH
         elif tickType == 4:
