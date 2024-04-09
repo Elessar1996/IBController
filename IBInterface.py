@@ -212,7 +212,7 @@ class MainIB(Wrapper, Client):
         # self.placeOrder(orderId=self.get_order_id(),
         #                 contract=contract,
         #                 order=order)
-        p = self.get_market_data(contract=contract, data_types=[BID, ASK, HIGH, LOW, OPEN, CLOSE, BID_SIZE], live_data=False)
+        p = self.get_market_data(contract=contract, data_types=[BID, ASK, HIGH, LOW, OPEN, CLOSE, BID_SIZE, ASK_SIZE], live_data=False)
         print(p)
         # self.get_total_pnl()
         #
