@@ -245,7 +245,7 @@ class MainIB(Wrapper, Client):
         p = self.get_market_data(contract=contract, data_types=[BID, ASK, HIGH, LOW, OPEN, CLOSE, BID_SIZE, ASK_SIZE], live_data=False)
         print(p)
         order = self.create_order(limit_price=p.ask, action=SELL, quantity=1)
-        self.placeOrder(orderId=self.get_order_id(), contract=contract, order=order)
+        # self.placeOrder(orderId=self.get_order_id(), contract=contract, order=order)
         time.sleep(2)
         self.get_open_orders()
         # self.get_total_pnl()
