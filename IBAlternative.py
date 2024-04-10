@@ -30,7 +30,7 @@ class IBAlternative:
         self.place_order_ib(contract=c, order=order)
 
         self.track_volume[ticker] = quantity
-
+        print(f'orderId: {order.orderId}')
         self.check_open_orders(order_id=order.orderId)
 
     def ib_sell(self, ticker, asset_type, quantity, price):
@@ -48,6 +48,8 @@ class IBAlternative:
         price = price_information.bid if price_information.bid is not None else price
         order = self.ib.generate_order(price=price, quantity=quantity, action=SELL)
         self.place_order_ib(contract=c, order=order)
+
+
 
         self.track_volume[ticker] = quantity
 
@@ -80,6 +82,7 @@ class IBAlternative:
     def check_open_orders(self, order_id):
 
         open_orders = self.ib.get_open_orders()
+        time.sleep(2)
         print(f"open orders call from IBAlternative: {open_orders}")
         if order_id in open_orders.keys():
             print(f'order_id: {order_id} exists in open order lists')
@@ -95,7 +98,7 @@ if __name__ == '__main__':
 
     ib_al = IBAlternative(ib=ib)
 
-    ib_al.ib_buy(ticker='AAPL', ticker_type='stock', quantity=1, price=120)
+    ib_al.ib_buy(ticker='AAPL', asset_type='stock', quantity=1, price=120)
 
 
 
