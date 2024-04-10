@@ -245,6 +245,8 @@ class MainIB(Wrapper, Client):
         print(p)
         order = self.create_order(limit_price=p.ask, action=SELL, quantity=1)
         self.placeOrder(orderId=self.get_order_id(), contract=contract, order=order)
+        time.sleep(2)
+        self.get_open_orders()
         # self.get_total_pnl()
         #
         # while True:
