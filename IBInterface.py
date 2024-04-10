@@ -25,6 +25,7 @@ class Wrapper(EWrapper):
         self.realtime_bars = []
         self.next_valid_order_id = None
         self.positions_pnl = {}
+        self.permId2ord = {}
         self.positions = []
         self.position_end_flag = False
         self.unrealized_pnl = None
