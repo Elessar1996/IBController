@@ -18,7 +18,7 @@ class IBAlternative:
 
         if quantity > price_information.ask_size:
 
-            quantity = int(price_information.ask_size/2)
+            quantity = int(price_information.ask_size/2) if int(price_information.ask_size/2) != 0 else 1
 
 
 
@@ -34,7 +34,7 @@ class IBAlternative:
         time.sleep(1)
 
         if quantity > price_information.bid_size:
-            quantity = int(price_information.bid_size/2)
+            quantity = int(price_information.bid_size/2) if int(price_information.bid_size/2) != 0 else 1
 
         order = self.ib.generate_order(price=price, quantity=quantity, action=SELL)
         self.place_order_ib(contract=c, order=order)
