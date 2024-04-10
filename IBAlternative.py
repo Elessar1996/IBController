@@ -1,5 +1,5 @@
 from Constants import *
-
+import time
 
 class IBAlternative:
 
@@ -10,12 +10,28 @@ class IBAlternative:
         self.ib.placeOrder(orderId=self.ib.get_order_id(), contract=contract, order=order)
 
     def ib_buy(self, ticker, asset_type, quantity, price):
+
+        price_information = self.ib.get_market_data()
+        time.sleep(1)
+
+        if quantity > price_information.ask_size:
+
+            quantity = price_information.ask_size
+
+
+
         c = self.ib.make_contract(ticker=ticker.upper(), ticker_type=asset_type)
 
         order = self.ib.generate_order(price=price, quantity=quantity, action=BUY)
         self.place_order_ib(contract=c, order=order)
 
     def ib_sell(self, ticker, asset_type, quantity, price):
+
+        price_information = self.ib.get_market_data()
+        time.sleep(1)
+
+        if quantity > price_information.bid_size:
+            quantity = price_information.bid_size
 
         c = self.ib.make_contract(ticker=ticker.upper(), ticker_type=asset_type)
         order = self.ib.generate_order(price=price, quantity=quantity, action=SELL)
