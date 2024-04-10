@@ -28,7 +28,7 @@ class IBAlternative:
 
         order = self.ib.generate_order(price=price, quantity=quantity, action=BUY)
         self.place_order_ib(contract=c, order=order)
-
+        print(f'order id: {order.orderId}')
         self.track_volume[ticker] = quantity
 
         self.check_open_orders(ticker=ticker)
@@ -84,6 +84,8 @@ class IBAlternative:
         print(f"open orders call from IBAlternative: {open_orders}")
         if ticker in open_orders.keys() and open_orders[ticker]['status'] == 'PreSubmitted':
             print(print(f'ticker: {ticker} exists in open order lists'))
+        else:
+            print(f'no open orders ')
         # if ticker in open_orders.keys() and open_orders[ticker].Status == 'PreSubmitted':
         #     print(f'ticker: {ticker} exists in open order lists')
 
@@ -98,7 +100,7 @@ if __name__ == '__main__':
 
     ib_al = IBAlternative(ib=ib)
 
-    ib_al.ib_buy(ticker='AAPL', asset_type='stock', quantity=1, price=120)
+    ib_al.ib_buy(ticker='INAB', asset_type='stock', quantity=1000000, price=120)
 
 
 
