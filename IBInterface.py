@@ -135,7 +135,8 @@ class Wrapper(EWrapper):
               "LmtPrice:", order.lmtPrice, "AuxPrice:", order.auxPrice, "Status:", orderState.status)
         order.contract = contract
         self.permId2ord[order.permId] = order
-        self.open_orders[contract.symbol] = order
+        order_ = {'order': order, 'status': orderState.status}
+        self.open_orders[contract.symbol] = order_
 
 
 class Client(EClient):
