@@ -80,9 +80,12 @@ class IBAlternative:
     def check_open_orders(self, ticker):
 
         open_orders = self.ib.get_open_orders()
+        time.sleep(2)
         print(f"open orders call from IBAlternative: {open_orders}")
-        if ticker in open_orders.keys() and open_orders[ticker].status == 'PreSubmitted':
-            print(f'ticker: {ticker} exists in open order lists')
+        for k, v in open_orders.items():
+            print(k, v)
+        # if ticker in open_orders.keys() and open_orders[ticker].Status == 'PreSubmitted':
+        #     print(f'ticker: {ticker} exists in open order lists')
 
 
 
