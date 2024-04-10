@@ -95,7 +95,7 @@ if __name__ == '__main__':
 
     ib_al = IBAlternative(ib=ib)
 
-    ib_al.ib_buy(ticker='AAPL', ticker_type='stock', quantity=1, price=120)
+    ib_al.ib_buy(ticker='AAPL', asset_type='stock', quantity=1, price=120)
 
 
 
