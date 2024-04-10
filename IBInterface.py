@@ -8,9 +8,7 @@ from Constants import *
 from PositionInfo import PositionInfo
 from PriceInformation import PriceInformation
 
-
 import threading
-
 
 
 class Wrapper(EWrapper):
@@ -31,20 +29,19 @@ class Wrapper(EWrapper):
         self.unrealized_pnl = None
         self.current_position_id = None
         self.total_pnl = None
-
+        self.open_orders = {}
 
     def historicalData(self, reqId: int, bar: BarData):
 
         self.historical_data.append(bar)
 
-    def nextValidId(self, orderId:int):
+    def nextValidId(self, orderId: int):
         self.next_valid_order_id = orderId
 
-    def historicalDataEnd(self, reqId:int, start:str, end:str):
+    def historicalDataEnd(self, reqId: int, start: str, end: str):
 
         self.historical_data.append(self.FINISHED)
         print(f'historical data request started at {start} and ended at {end}')
-
 
     def contractDetails(self, reqId: int, contractDetails: ContractDetails):
 
@@ -63,16 +60,18 @@ class Wrapper(EWrapper):
             pass
 
     def pnlSingle(self, reqId: int, pos: int, dailyPnL: float, unrealizedPnL: float, realizedPnL: float, value: float):
-        print(f'reqId: {reqId} --- pos: {pos}, dailyPnl: {dailyPnL} --- realizedPnl: {realizedPnL} --- unrealized pnl: {unrealizedPnL}')
-        self.positions_pnl[reqId] = pos, dailyPnL, unrealizedPnL, realizedPnL, value if reqId in self.positions_pnl.keys() else None
+        print(
+            f'reqId: {reqId} --- pos: {pos}, dailyPnl: {dailyPnL} --- realizedPnl: {realizedPnL} --- unrealized pnl: {unrealizedPnL}')
+        self.positions_pnl[
+            reqId] = pos, dailyPnL, unrealizedPnL, realizedPnL, value if reqId in self.positions_pnl.keys() else None
         self.unrealized_pnl = unrealizedPnL
 
     def pnl(self, reqId: int, dailyPnL: float, unrealizedPnL: float, realizedPnL: float):
 
         self.total_pnl = unrealizedPnL
 
-    def position(self, account:str, contract:Contract, position:float,
-                 avgCost:float):
+    def position(self, account: str, contract: Contract, position: float,
+                 avgCost: float):
         self.positions.append(PositionInfo(account, contract, position, avgCost))
 
     def positionEnd(self):
@@ -108,7 +107,7 @@ class Wrapper(EWrapper):
         except KeyError:
             pass
 
-    def tickSize(self, reqId:TickerId, tickType:TickType, size:int):
+    def tickSize(self, reqId: TickerId, tickType: TickType, size: int):
         data_type = None
         print(f'size: {size}')
         if tickType == 0:
@@ -121,13 +120,13 @@ class Wrapper(EWrapper):
         except Exception as e:
             print(e)
 
-    def realtimeBar(self, reqId: TickerId, time:int, open_: float, high: float, low: float, close: float,
-                        volume: int, wap: float, count: int):
+    def realtimeBar(self, reqId: TickerId, time: int, open_: float, high: float, low: float, close: float,
+                    volume: int, wap: float, count: int):
 
         self.realtime_bars.append((open_, high, low, close, volume))
 
-    def openOrder(self, orderId:OrderId, contract:Contract, order:Order,
-                  orderState:OrderState):
+    def openOrder(self, orderId: OrderId, contract: Contract, order: Order,
+                  orderState: OrderState):
         super().openOrder(orderId, contract, order, orderState)
         print("OpenOrder. PermId: ", order.permId, "ClientId:", order.clientId, " OrderId:", orderId,
               "Account:", order.account, "Symbol:", contract.symbol, "SecType:", contract.secType,
@@ -136,7 +135,7 @@ class Wrapper(EWrapper):
               "LmtPrice:", order.lmtPrice, "AuxPrice:", order.auxPrice, "Status:", orderState.status)
         order.contract = contract
         self.permId2ord[order.permId] = order
-
+        self.open_orders[order.orderId] = order
 
 
 class Client(EClient):
@@ -173,13 +172,13 @@ class Client(EClient):
 
         return contract
 
-    def get_unique_id(self)->int:
+    def get_unique_id(self) -> int:
 
         self.unique_id += 1
 
         return self.unique_id
 
-    def create_order(self, limit_price:float, quantity:float, action)-> Order:
+    def create_order(self, limit_price: float, quantity: float, action) -> Order:
 
         order = Order()
         order.action = action
@@ -192,7 +191,7 @@ class Client(EClient):
 
         return order
 
-    def create_market_order(self, quantity, action)-> Order:
+    def create_market_order(self, quantity, action) -> Order:
 
         order = Order()
         order.action = action
@@ -223,7 +222,6 @@ class Client(EClient):
         else:
             order = self.create_market_order(quantity=quantity, action=action)
             return order
-
 
 
 class MainIB(Wrapper, Client):
@@ -337,13 +335,14 @@ class MainIB(Wrapper, Client):
     #     self.cancelMktData(req_id)
 
     def get_historical_data(self, contract: Contract, keep_updating: bool = False,
-                           timeout: int = 10, whatToShow: str = 'TRADES'):
+                            timeout: int = 10, whatToShow: str = 'TRADES'):
         req_id = self.get_unique_id()
 
         self.reqHistoricalData(reqId=req_id, contract=contract, endDateTime='',
-                               durationStr='1 D', barSizeSetting='1 min', keepUpToDate=keep_updating, whatToShow=whatToShow, useRTH=True, chartOptions=[], formatDate=1)
+                               durationStr='1 D', barSizeSetting='1 min', keepUpToDate=keep_updating,
+                               whatToShow=whatToShow, useRTH=True, chartOptions=[], formatDate=1)
 
-        for _ in range(timeout*100):
+        for _ in range(timeout * 100):
             time.sleep(0.01)
             if self.FINISHED in self.historical_data:
                 self.historical_data.pop()
@@ -353,12 +352,14 @@ class MainIB(Wrapper, Client):
         else:
             return []
 
-    def get_realtime_bars(self, contract:Contract, bar_size: int=5, whatToShow: str ='TRADES', useRTH: bool = True, timeout:int = 5):
+    def get_realtime_bars(self, contract: Contract, bar_size: int = 5, whatToShow: str = 'TRADES', useRTH: bool = True,
+                          timeout: int = 5):
 
         req_id = self.get_unique_id()
 
-        self.reqRealTimeBars(reqId=req_id, contract=contract, barSize=bar_size, whatToShow=whatToShow, useRTH=useRTH, realTimeBarsOptions=[])
-        for _ in range(100*timeout):
+        self.reqRealTimeBars(reqId=req_id, contract=contract, barSize=bar_size, whatToShow=whatToShow, useRTH=useRTH,
+                             realTimeBarsOptions=[])
+        for _ in range(100 * timeout):
             time.sleep(0.01)
             if len(self.realtime_bars) > 0:
                 return self.realtime_bars.pop()
@@ -371,7 +372,7 @@ class MainIB(Wrapper, Client):
 
         self.total_pnl = None
         self.reqPnL(reqId=self.get_unique_id(), account=ACCOUNT, modelCode='')
-        for _ in range(100*timeout):
+        for _ in range(100 * timeout):
 
             time.sleep(0.01)
             if self.total_pnl is not None:
@@ -382,12 +383,11 @@ class MainIB(Wrapper, Client):
         else:
             print('none received')
 
-
-    def get_order_id(self, timeout:int=10):
+    def get_order_id(self, timeout: int = 10):
 
         self.next_valid_order_id = None
         self.reqIds(-1)
-        for _ in range(100*timeout):
+        for _ in range(100 * timeout):
             time.sleep(0.01)
             if self.next_valid_order_id is not None:
                 self.current_position_id = self.next_valid_order_id
@@ -417,7 +417,7 @@ class MainIB(Wrapper, Client):
                               conid=position.contract.conId)
             contract_for_id[req_id] = position.contract
 
-        for _ in range(timeout*100):
+        for _ in range(timeout * 100):
             time.sleep(0.01)
             if None not in self.positions_pnl.values():
                 break
@@ -428,7 +428,6 @@ class MainIB(Wrapper, Client):
             # except:
             #     pass
             if pnl is not None:
-
 
                 try:
 
@@ -441,7 +440,7 @@ class MainIB(Wrapper, Client):
         # print(f'positions pnl: {self.positions_pnl}')
         return self.positions_pnl
 
-    def get_specific_pnl(self, contract, req_id,timeout=10):
+    def get_specific_pnl(self, contract, req_id, timeout=10):
         positions = self.get_positions()
         self.positions_pnl = {}
         contract_for_id = {}
@@ -460,7 +459,7 @@ class MainIB(Wrapper, Client):
         )
         self.unrealized_pnl = None
         time.sleep(2)
-        for _ in range(timeout*100):
+        for _ in range(timeout * 100):
             time.sleep(0.01)
             if self.unrealized_pnl is not None:
                 break
@@ -474,7 +473,7 @@ class MainIB(Wrapper, Client):
         self.position_end_flag = False
         self.reqPositions()
 
-        for _ in range(timeout*100):
+        for _ in range(timeout * 100):
             time.sleep(0.01)
             if self.position_end_flag:
                 break
@@ -482,8 +481,11 @@ class MainIB(Wrapper, Client):
         self.cancelPositions()
 
         return self.positions
+
     def get_open_orders(self):
+        self.open_orders = {}
         self.reqOpenOrders()
+        return self.open_orders
     #
     # def main(self):
     #
@@ -491,10 +493,6 @@ class MainIB(Wrapper, Client):
     #
     #     for p in positions:
     #         print(p)
-
-
-
-
 
 
 if __name__ == '__main__':
