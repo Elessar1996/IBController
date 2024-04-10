@@ -40,7 +40,7 @@ class IBAlternative:
                                                     live_data=False)
         time.sleep(1)
 
-        if quantity > price_information.bid_size:
+        if quantity > price_information.bid_size/2:
             quantity = int(price_information.bid_size / 2) if int(price_information.bid_size / 2) != 0 else 1
 
         price = price_information.bid if price_information.bid is not None else price
