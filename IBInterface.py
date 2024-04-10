@@ -116,7 +116,7 @@ class Wrapper(EWrapper):
             data_type = ASK_SIZE
 
         try:
-            setattr(self.market_data[reqId], data_type, size)
+            setattr(self.market_data[reqId], str(data_type), size)
         except Exception as e:
             print(e)
 
@@ -225,13 +225,15 @@ class MainIB(Wrapper, Client):
 
     def main(self):
 
-        contract = self.make_contract(ticker='TSLA', ticker_type='stock')
+        contract = self.make_contract(ticker='INAB', ticker_type='stock')
         # order = self.create_order(limit_price=30305, action=BUY, quantity=10000)
         # self.placeOrder(orderId=self.get_order_id(),
         #                 contract=contract,
         #                 order=order)
         p = self.get_market_data(contract=contract, data_types=[BID, ASK, HIGH, LOW, OPEN, CLOSE, BID_SIZE, ASK_SIZE], live_data=False)
         print(p)
+        order = self.create_order(limit_price=p.ask, action=SELL, quantity=1)
+        self.placeOrder(orderId=self.get_order_id(), contract=contract, order=order)
         # self.get_total_pnl()
         #
         # while True:
