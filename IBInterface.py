@@ -125,6 +125,17 @@ class Wrapper(EWrapper):
 
         self.realtime_bars.append((open_, high, low, close, volume))
 
+    def openOrder(self, orderId:OrderId, contract:Contract, order:Order,
+                  orderState:OrderState):
+        super().openOrder(orderId, contract, order, orderState)
+        print("OpenOrder. PermId: ", order.permId, "ClientId:", order.clientId, " OrderId:", orderId,
+              "Account:", order.account, "Symbol:", contract.symbol, "SecType:", contract.secType,
+              "Exchange:", contract.exchange, "Action:", order.action, "OrderType:", order.orderType,
+              "TotalQty:", order.totalQuantity, "CashQty:", order.cashQty,
+              "LmtPrice:", order.lmtPrice, "AuxPrice:", order.auxPrice, "Status:", orderState.status)
+        order.contract = contract
+        self.permId2ord[order.permId] = order
+
 
 
 class Client(EClient):
@@ -468,6 +479,8 @@ class MainIB(Wrapper, Client):
         self.cancelPositions()
 
         return self.positions
+    def get_open_orders(self):
+        self.reqOpenOrders()
     #
     # def main(self):
     #
