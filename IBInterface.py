@@ -137,7 +137,16 @@ class Wrapper(EWrapper):
         self.permId2ord[order.permId] = order
         order_ = {'order': order, 'status': orderState.status}
         self.open_orders[contract.symbol] = order_
-
+    def updateMktDepth(self, reqId:TickerId , position:int, operation:int,
+                        side:int, price:float, size:int):
+        super().updateMktDepth(reqId, position, operation, side, price, size)
+        print("UpdateMarketDepth. ReqId:", reqId, "Position:", position, "Operation:",
+        operation, "Side:", side, "Price:", price, "Size:", size)
+    def updateMktDepthL2(self, reqId:TickerId , position:int, marketMaker:str,
+                          operation:int, side:int, price:float, size:int, isSmartDepth:bool):
+        super().updateMktDepthL2(reqId, position, marketMaker, operation, side, price, size, isSmartDepth)
+        print("UpdateMarketDepthL2. ReqId:", reqId, "Position:", position, "MarketMaker:", marketMaker, "Operation:",
+        operation, "Side:", side, "Price:", price, "Size:", size, "isSmartDepth:", isSmartDepth)
 
 class Client(EClient):
 
@@ -241,12 +250,13 @@ class MainIB(Wrapper, Client):
         # self.placeOrder(orderId=self.get_order_id(),
         #                 contract=contract,
         #                 order=order)
-        p = self.get_market_data(contract=contract, data_types=[BID, ASK, HIGH, LOW, OPEN, CLOSE, BID_SIZE, ASK_SIZE], live_data=False)
-        print(p)
-        order = self.create_order(limit_price=p.ask, action=SELL, quantity=1)
+        # p = self.get_market_data(contract=contract, data_types=[BID, ASK, HIGH, LOW, OPEN, CLOSE, BID_SIZE, ASK_SIZE], live_data=False)
+        # print(p)
+        # order = self.create_order(limit_price=p.ask, action=SELL, quantity=1)
         # self.placeOrder(orderId=self.get_order_id(), contract=contract, order=order)
         time.sleep(2)
-        self.get_open_orders()
+        # self.get_open_orders()
+        self.get_level_two(contract)
         # self.get_total_pnl()
         #
         # while True:
@@ -487,7 +497,11 @@ class MainIB(Wrapper, Client):
         self.open_orders = {}
         self.reqOpenOrders()
         return self.open_orders
-    #
+
+    def get_level_two(self, contract):
+        self.reqMktDepth(2001, contract, 5, False, [])
+
+
     # def main(self):
     #
     #     positions = self.get_positions()
