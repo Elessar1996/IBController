@@ -7,6 +7,7 @@ from ibapi.contract import Contract
 from Constants import *
 from PositionInfo import PositionInfo
 from PriceInformation import PriceInformation
+from LevelTwoInformation import LevelTwoInformation
 
 import threading
 
@@ -30,7 +31,8 @@ class Wrapper(EWrapper):
         self.current_position_id = None
         self.total_pnl = None
         self.open_orders = {}
-
+        self.level_two = {}
+        self.level_two_based_on_id = {}
     def historicalData(self, reqId: int, bar: BarData):
 
         self.historical_data.append(bar)
@@ -142,11 +144,16 @@ class Wrapper(EWrapper):
         super().updateMktDepth(reqId, position, operation, side, price, size)
         print("UpdateMarketDepth. ReqId:", reqId, "Position:", position, "Operation:",
         operation, "Side:", side, "Price:", price, "Size:", size)
+
+
+
     def updateMktDepthL2(self, reqId:TickerId , position:int, marketMaker:str,
                           operation:int, side:int, price:float, size:int, isSmartDepth:bool):
         super().updateMktDepthL2(reqId, position, marketMaker, operation, side, price, size, isSmartDepth)
         print("UpdateMarketDepthL2. ReqId:", reqId, "Position:", position, "MarketMaker:", marketMaker, "Operation:",
         operation, "Side:", side, "Price:", price, "Size:", size, "isSmartDepth:", isSmartDepth)
+        level_two_info = LevelTwoInformation(reqId, marketMaker, position, operation, side, price, size, isSmartDepth)
+        self.level_two[reqId].append(level_two_info)
 
 class Client(EClient):
 
@@ -232,6 +239,37 @@ class Client(EClient):
         else:
             order = self.create_market_order(quantity=quantity, action=action)
             return order
+
+    def make_contract_for_level_two(self, ticker, ticker_type):
+        if ticker_type == 'stock':
+
+            contract = Contract()
+
+            contract.symbol = ticker
+            contract.secType = 'STK'
+            contract.currency = 'USD'
+            contract.exchange = 'ISLAND'
+
+
+        elif ticker_type == 'currency':
+            contract = Contract()
+            contract.symbol = ticker
+            contract.secType = 'CASH'
+            contract.currency = 'USD'
+            contract.exchange = 'IDEALPRO'
+
+        else:
+            contract = Contract()
+            contract.symbol = ticker
+            contract.secType = 'CRYPTO'
+            contract.currency = 'USD'
+            contract.exchange = 'PAXOS'
+
+        return contract
+
+
+
+
 
 
 class MainIB(Wrapper, Client):
@@ -498,8 +536,11 @@ class MainIB(Wrapper, Client):
         self.reqOpenOrders()
         return self.open_orders
 
-    def get_level_two(self, contract):
-        self.reqMktDepth(2001, contract, 5, False, [])
+    def get_level_two(self, ticker, ticker_type, req_id):
+        contract = self.make_contract_for_level_two(ticker, ticker_type)
+
+        self.level_two[req_id] = []
+        self.reqMktDepth(req_id, contract, 5, False, [])
 
 
     # def main(self):
@@ -515,3 +556,4 @@ if __name__ == '__main__':
     ib = MainIB(11)
     time.sleep(5)
     ib.main()
+

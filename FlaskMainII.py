@@ -151,6 +151,8 @@ def webhook():
             ib=MainIB(client_id=13)
         )
 
+        ib.start_getting_level_two()
+
         first_time = False
 
     webhook_message = request.data.decode('utf-8')
@@ -202,6 +204,7 @@ def webhook():
     # print(f'trade args: {trade_arg}')
 
 
+    ib.start_getting_level_two(json_dict['ticker'], STOCK)
 
     command = generate_command(json_dict['ticker'], trade_args, price)
 
