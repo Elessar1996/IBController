@@ -83,7 +83,7 @@ class Wrapper(EWrapper):
     def tickPrice(self, reqId: TickerId, tickType: TickType, price: float,
                   attrib: TickAttrib):
 
-        print(f'price: {price} -- {TickTypeEnum.to_str(tickType)}')
+        # print(f'price: {price} -- {TickTypeEnum.to_str(tickType)}')
 
         data_type = None
         if tickType == 0:
@@ -111,7 +111,7 @@ class Wrapper(EWrapper):
 
     def tickSize(self, reqId: TickerId, tickType: TickType, size: int):
         data_type = None
-        print(f'size: {size}')
+        # print(f'size: {size}')
         if tickType == 0:
             data_type = BID_SIZE
         elif tickType == 3:
@@ -130,11 +130,11 @@ class Wrapper(EWrapper):
     def openOrder(self, orderId: OrderId, contract: Contract, order: Order,
                   orderState: OrderState):
         super().openOrder(orderId, contract, order, orderState)
-        print("OpenOrder. PermId: ", order.permId, "ClientId:", order.clientId, " OrderId:", orderId,
-              "Account:", order.account, "Symbol:", contract.symbol, "SecType:", contract.secType,
-              "Exchange:", contract.exchange, "Action:", order.action, "OrderType:", order.orderType,
-              "TotalQty:", order.totalQuantity, "CashQty:", order.cashQty,
-              "LmtPrice:", order.lmtPrice, "AuxPrice:", order.auxPrice, "Status:", orderState.status)
+        # print("OpenOrder. PermId: ", order.permId, "ClientId:", order.clientId, " OrderId:", orderId,
+        #       "Account:", order.account, "Symbol:", contract.symbol, "SecType:", contract.secType,
+        #       "Exchange:", contract.exchange, "Action:", order.action, "OrderType:", order.orderType,
+        #       "TotalQty:", order.totalQuantity, "CashQty:", order.cashQty,
+        #       "LmtPrice:", order.lmtPrice, "AuxPrice:", order.auxPrice, "Status:", orderState.status)
         order.contract = contract
         self.permId2ord[order.permId] = order
         order_ = {'order': order, 'status': orderState.status}
@@ -142,16 +142,16 @@ class Wrapper(EWrapper):
     def updateMktDepth(self, reqId:TickerId , position:int, operation:int,
                         side:int, price:float, size:int):
         super().updateMktDepth(reqId, position, operation, side, price, size)
-        print("UpdateMarketDepth. ReqId:", reqId, "Position:", position, "Operation:",
-        operation, "Side:", side, "Price:", price, "Size:", size)
+        # print("UpdateMarketDepth. ReqId:", reqId, "Position:", position, "Operation:",
+        # operation, "Side:", side, "Price:", price, "Size:", size)
 
 
 
     def updateMktDepthL2(self, reqId:TickerId , position:int, marketMaker:str,
                           operation:int, side:int, price:float, size:int, isSmartDepth:bool):
         super().updateMktDepthL2(reqId, position, marketMaker, operation, side, price, size, isSmartDepth)
-        print("UpdateMarketDepthL2. ReqId:", reqId, "Position:", position, "MarketMaker:", marketMaker, "Operation:",
-        operation, "Side:", side, "Price:", price, "Size:", size, "isSmartDepth:", isSmartDepth)
+        # print("UpdateMarketDepthL2. ReqId:", reqId, "Position:", position, "MarketMaker:", marketMaker, "Operation:",
+        # operation, "Side:", side, "Price:", price, "Size:", size, "isSmartDepth:", isSmartDepth)
         level_two_info = LevelTwoInformation(reqId, marketMaker, position, operation, side, price, size, isSmartDepth)
         self.level_two[reqId].append(level_two_info)
 
@@ -224,14 +224,14 @@ class Client(EClient):
 
         this_moment = datetime.datetime.now()
 
-        print(f'this moment: {this_moment}')
+        # print(f'this moment: {this_moment}')
 
         ninethiry = this_moment.replace(hour=9, minute=30, second=0)
-        print(f'nine thirty: {ninethiry}')
+        # print(f'nine thirty: {ninethiry}')
         fourpm = this_moment.replace(hour=16, minute=0, second=0)
-        print(f'four pm: {fourpm}')
+        # print(f'four pm: {fourpm}')
 
-        print(f'limit order condition: {this_moment < ninethiry or this_moment > fourpm}')
+        # print(f'limit order condition: {this_moment < ninethiry or this_moment > fourpm}')
 
         if this_moment < ninethiry or this_moment > fourpm:
             order = self.create_order(limit_price=price, quantity=quantity, action=action)

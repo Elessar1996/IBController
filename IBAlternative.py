@@ -37,7 +37,6 @@ class IBAlternative:
 
         return {v: k for k, v in self.id_ticker.items()}[ticker]
 
-
     def get_bid_price(self, ticker):
 
         req_id = self.get_req_ids(ticker)
@@ -58,10 +57,8 @@ class IBAlternative:
 
         return sorted(ask_items, key=lambda t: t.position)[-1].price
 
-
     def place_order_ib(self, contract, order):
         self.ib.placeOrder(orderId=self.ib.get_order_id(), contract=contract, order=order)
-
 
     def ib_buy(self, ticker, asset_type, quantity, price):
 
@@ -91,7 +88,7 @@ class IBAlternative:
                                                     live_data=False)
         time.sleep(1)
 
-        if quantity > price_information.bid_size/2:
+        if quantity > price_information.bid_size / 2:
             quantity = int(price_information.bid_size / 2) if int(price_information.bid_size / 2) != 0 else 1
 
         # price = price_information.bid if price_information.bid is not None else price
@@ -131,16 +128,10 @@ class IBAlternative:
 
         open_orders = self.ib.get_open_orders()
         time.sleep(2)
-        print(f"open orders call from IBAlternative: {open_orders}")
         if ticker in open_orders.keys() and open_orders[ticker]['status'] == 'PreSubmitted':
             return True
-            # print(print(f'ticker: {ticker} exists in open order lists'))
         else:
             return False
-            # print(f'no open orders ')
-        # if ticker in open_orders.keys() and open_orders[ticker].Status == 'PreSubmitted':
-        #     print(f'ticker: {ticker} exists in open order lists')
-
 
 
 if __name__ == '__main__':
@@ -156,12 +147,3 @@ if __name__ == '__main__':
         time.sleep(0.1)
         print(ib_al.ib.level_two)
     # ib_al.ib_buy(ticker='INAB', asset_type='stock', quantity=1000000, price=120)
-
-
-
-
-
-
-
-
-

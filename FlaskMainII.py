@@ -59,35 +59,42 @@ def separate(json_d):
     return cdvs, cvds, smas
 
 
-def run_command(command, ticker, price, quantity, asset_type):
+def run_command(command, ticker, price, quantity, asset_type, is_shortable):
     global ib
     global traders
     if command == 'long':
 
         ib.ib_buy(ticker, asset_type, quantity, price)
     elif command == 'short':
+        if not is_shortable:
+            return
         ib.ib_sell(ticker, asset_type, quantity, price)
 
     elif command == 'close and go short':
 
         ib.close_position_ib(ticker, asset_type, price, quantity, position=IN_LONG)
+        if not is_shortable:
+            return
         ib.ib_sell(ticker, asset_type, quantity, price)
 
     elif command == 'close and go long':
-
-        ib.close_position_ib(ticker, asset_type, price, quantity, position=IN_SHORT)
+        if is_shortable:
+            ib.close_position_ib(ticker, asset_type, price, quantity, position=IN_SHORT)
         ib.ib_buy(ticker, asset_type, quantity, price)
+
     elif command == 'close long':
 
         ib.close_position_ib(ticker, asset_type, price, quantity, position=IN_LONG)
 
     elif command == 'close short':
 
+        if not is_shortable:
+            return
         ib.close_position_ib(ticker, asset_type, price, quantity, position=IN_SHORT)
 
     else:
 
-        return None
+        return "No Command"
 
 
 def generate_command(ticker, trade_args, price):
@@ -105,7 +112,7 @@ def generate_command(ticker, trade_args, price):
 def insert_data_table(ticker, tuple_of_values):
     insert_item(f'{ticker}_data_table',
                 columns_list=['created_at'] + [f'sma_{i}' for i in sma_numbers] +
-                [f'cdv_{i}' for i in cdv_numbers] + [f'cvd_{i}' for i in cvd_numbers] + ['command'],
+                             [f'cdv_{i}' for i in cdv_numbers] + [f'cvd_{i}' for i in cvd_numbers] + ['command'],
                 value_tuple=tuple_of_values)
 
 
@@ -115,7 +122,6 @@ def create_data_table(ticker):
     print(all_tables)
 
     if f'{ticker}_data_table'.lower() in all_tables:
-        # print(f'Table {ticker}_data_table already exists')
 
         return False
     else:
@@ -151,13 +157,9 @@ def webhook():
             ib=MainIB(client_id=13)
         )
 
-
-
         first_time = False
 
     webhook_message = request.data.decode('utf-8')
-
-    # print(f'webhook message: {webhook_message}')
 
     keys_and_values = webhook_message.split(',')
 
@@ -167,20 +169,14 @@ def webhook():
         if kv_splitted[0] not in json_dict.keys():
             json_dict[kv_splitted[0]] = kv_splitted[1]
 
-
     cdvs, cvds, smas = separate(json_dict)
 
     cdvs.sort(key=lambda t: int(t[0].split('_')[1]), reverse=False)
     cvds.sort(key=lambda t: int(t[0].split('_')[1]), reverse=False)
     smas.sort(key=lambda t: int(t[0].split('_')[1]), reverse=False)
 
-    pprint.pprint(cdvs)
-    pprint.pprint('---------------------------')
-    pprint.pprint(cvds)
-    pprint.pprint('---------------------------')
-    pprint.pprint(smas)
-
     price = float(json_dict['close'])
+    is_shortable = True if json_dict.get('is_shortable') == 'true' else False
     create_data_table(json_dict['ticker'])
 
     list_smas = []
@@ -201,9 +197,6 @@ def webhook():
         'list_cdvs': cdv_list if use_cdv == 'use_cdv' else None
     }
 
-    # print(f'trade args: {trade_arg}')
-
-
     ib.start_getting_level_two(json_dict['ticker'], STOCK)
 
     command = generate_command(json_dict['ticker'], trade_args, price)
@@ -215,15 +208,11 @@ def webhook():
         ticker=json_dict['ticker'],
         price=price,
         quantity=QUANTITY,
-        asset_type=STOCK
+        asset_type=STOCK,
+        is_shortable=is_shortable
     )
 
-    # command = trader.multiple_sma(trade_arg)
-
     values = [json_dict['time']] + sma_list + cvd_list + cdv_list + [command]
-
-    print(f'length of values: {len(values)}')
-    print(f'length of columns: {len(sma_list) + len(cdv_list) + len(cvd_list)}')
 
     values_tuple = tuple(values)
 
@@ -237,7 +226,7 @@ def webhook():
 
 
 if __name__ == '__main__':
-    # print(f'hi')
+    print(f'Server has been started ...')
     app.config['leverage'] = sys.argv[1]
     app.config['stop_loss'] = sys.argv[2]
     app.config['use_cdv'] = sys.argv[3]
@@ -246,5 +235,4 @@ if __name__ == '__main__':
     stop_loss = app.config['stop_loss']
     use_cdv = app.config['use_cdv']
     use_cvd = app.config['use_cvd']
-    # print(leverage, stop_loss)
     app.run()
