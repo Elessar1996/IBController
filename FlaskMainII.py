@@ -11,7 +11,6 @@ import pprint
 ##TODO: Fix the new_multiple_sma calls in this file
 
 
-print(f'beginning of the file')
 app = Flask(__name__)
 data = ["NOTHING"]
 
@@ -119,7 +118,6 @@ def insert_data_table(ticker, tuple_of_values):
 def create_data_table(ticker):
     all_tables = get_list_of_all_tables()
 
-    print(all_tables)
 
     if f'{ticker}_data_table'.lower() in all_tables:
 
@@ -220,7 +218,6 @@ def webhook():
 
     data.append(json_dict)
 
-    print(json_dict)
 
     return json_dict
 

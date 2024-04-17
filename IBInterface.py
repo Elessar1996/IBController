@@ -540,7 +540,10 @@ class MainIB(Wrapper, Client):
         contract = self.make_contract_for_level_two(ticker, ticker_type)
 
         self.level_two[req_id] = []
-        self.reqMktDepth(req_id, contract, 5, False, [])
+        try:
+            self.reqMktDepth(req_id, contract, 5, False, [])
+        except Exception as e:
+            print(f'coming from get_level_two: {e}')
 
 
     # def main(self):

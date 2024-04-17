@@ -15,11 +15,17 @@ class IBAlternative:
 
         self.id_ticker = {}
 
+        self.all_ids = []
+
     def make_req_id(self, ticker):
 
         req_id = random.randint(1, 1000)
+        while req_id in self.all_ids:
+            req_id = random.randint(1, 1000)
+        else:
 
-        self.id_ticker[req_id] = ticker
+            self.id_ticker[req_id] = ticker
+            self.all_ids.append(req_id)
 
         return req_id
 
