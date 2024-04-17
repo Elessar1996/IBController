@@ -33,9 +33,35 @@ class IBAlternative:
 
         t.start()
 
+    def get_req_id(self, ticker):
+
+        return {v: k for k, v in self.id_ticker.items()}[ticker]
+
+
+    def get_bid_price(self, ticker):
+
+        req_id = self.get_req_ids(ticker)
+
+        data_items = self.ib.level_two[req_id][-10:]
+
+        bid_items = [i for i in data_items if i.side == 1]
+
+        return sorted(bid_items, key=lambda t: t.position)[-1].price
+
+    def get_ask_price(self, ticker):
+
+        req_id = self.get_req_ids(ticker)
+
+        data_items = self.ib.level_two[req_id][-10:]
+
+        ask_items = [i for i in data_items if i.side == 0]
+
+        return sorted(ask_items, key=lambda t: t.position)[-1].price
+
 
     def place_order_ib(self, contract, order):
         self.ib.placeOrder(orderId=self.ib.get_order_id(), contract=contract, order=order)
+
 
     def ib_buy(self, ticker, asset_type, quantity, price):
 
@@ -49,8 +75,8 @@ class IBAlternative:
         if quantity > price_information.ask_size:
             quantity = int(price_information.ask_size / 2) if int(price_information.ask_size / 2) != 0 else 1
 
-        price = price_information.ask if price_information.ask is not None else price
-
+        # price = price_information.ask if price_information.ask is not None else price
+        price = self.get_ask_price(ticker)
         order = self.ib.generate_order(price=price, quantity=quantity, action=BUY)
         self.place_order_ib(contract=c, order=order)
         self.track_volume[ticker] = quantity
@@ -68,7 +94,8 @@ class IBAlternative:
         if quantity > price_information.bid_size/2:
             quantity = int(price_information.bid_size / 2) if int(price_information.bid_size / 2) != 0 else 1
 
-        price = price_information.bid if price_information.bid is not None else price
+        # price = price_information.bid if price_information.bid is not None else price
+        price = self.get_bid_price(ticker)
         order = self.ib.generate_order(price=price, quantity=quantity, action=SELL)
         self.place_order_ib(contract=c, order=order)
 
