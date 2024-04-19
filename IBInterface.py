@@ -8,6 +8,7 @@ from Constants import *
 from PositionInfo import PositionInfo
 from PriceInformation import PriceInformation
 from LevelTwoInformation import LevelTwoInformation
+from OrderInformation import OrderInformation
 
 import threading
 
@@ -137,8 +138,7 @@ class Wrapper(EWrapper):
         #       "TotalQty:", order.totalQuantity, "CashQty:", order.cashQty,
         #       "LmtPrice:", order.lmtPrice, "AuxPrice:", order.auxPrice, "Status:", orderState.status)
         order.contract = contract
-        self.permId2ord[order.permId] = order
-        self.open_orders[contract.symbol] = None
+
 
     def updateMktDepth(self, reqId: TickerId, position: int, operation: int,
                        side: int, price: float, size: int):
@@ -161,11 +161,15 @@ class Wrapper(EWrapper):
 
         super().orderStatus(orderId, status, filled, remaining,
                             avgFillPrice, permId, parentId, lastFillPrice, clientId, whyHeld, mktCapPrice)
-        print("OrderStatus. Id:", orderId, "Status:", status, "Filled:", filled,
-              "Remaining:", remaining, "AvgFillPrice:", avgFillPrice,
-              "PermId:", permId, "ParentId:", parentId, "LastFillPrice:",
-              lastFillPrice, "ClientId:", clientId, "WhyHeld:",
-              whyHeld, "MktCapPrice:", mktCapPrice)
+        # print("OrderStatus. Id:", orderId, "Status:", status, "Filled:", filled,
+        #       "Remaining:", remaining, "AvgFillPrice:", avgFillPrice,
+        #       "PermId:", permId, "ParentId:", parentId, "LastFillPrice:",
+        #       lastFillPrice, "ClientId:", clientId, "WhyHeld:",
+        #       whyHeld, "MktCapPrice:", mktCapPrice)
+        order_information = OrderInformation(orderId, status, filled, remaining,
+                                             avgFillPrice, permId, parentId, lastFillPrice, clientId,
+                                             whyHeld, mktCapPrice)
+        self.open_orders[orderId] = order_information
 
     def openOrderEnd(self):
         super().openOrderEnd()

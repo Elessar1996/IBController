@@ -17,6 +17,8 @@ class IBAlternative:
 
         self.all_ids = []
 
+        self.orderId_ticker = {}
+
     def make_req_id(self, ticker):
 
         req_id = random.randint(1, 1000)
@@ -83,8 +85,6 @@ class IBAlternative:
 
         self.place_order_ib(contract=c, order=order)
 
-        print(f'next valid order id: {self.ib.next_valid_order_id}')
-
     def ib_buy(self, ticker, asset_type, quantity, price):
 
         p = price
@@ -115,6 +115,8 @@ class IBAlternative:
 
         print('order id is:', order.id)
         self.place_order_ib(contract=c, order=order)
+        self.orderId_ticker[self.ib.next_valid_order_id] = (c, order)
+
         self.track_volume[ticker] = quantity
         self.check_open_orders(ticker=ticker)
 
@@ -149,6 +151,8 @@ class IBAlternative:
         order = self.ib.generate_order(price=price, quantity=quantity, action=SELL)
         self.place_order_ib(contract=c, order=order)
 
+        self.orderId_ticker[self.ib.next_valid_order_id] = (c, order)
+
         self.track_volume[ticker] = quantity
 
     def close_position_ib(self, ticker, asset_type, price, quantity, position):
@@ -166,6 +170,8 @@ class IBAlternative:
             order = self.ib.generate_order(price=price, quantity=quantity, action=SELL)
             self.place_order_ib(contract=c, order=order)
 
+            self.orderId_ticker[self.ib.next_valid_order_id] = (c, order)
+
         elif position == IN_SHORT:
             quantity = self.track_volume[ticker]
             c = self.ib.make_contract(ticker=ticker.upper(), ticker_type=asset_type)
@@ -176,6 +182,8 @@ class IBAlternative:
 
             order = self.ib.generate_order(price=price, quantity=quantity, action=BUY)
             self.place_order_ib(contract=c, order=order)
+
+            self.orderId_ticker[self.ib.next_valid_order_id] = (c, order)
 
     def check_open_orders(self, ticker):
 
