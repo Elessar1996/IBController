@@ -95,6 +95,9 @@ class IBAlternative:
         # price = price_information.ask if price_information.ask is not None else price
         price, quantity = self.get_ask_price(ticker)
 
+        if quantity is not None:
+            quantity = int(0.5*quantity) if int(0.5*quantity) != 0 else 1
+
         if price is None:
             price = price_information.ask if price_information.ask is not None else p
         if quantity is None:
@@ -122,6 +125,9 @@ class IBAlternative:
 
         # price = price_information.bid if price_information.bid is not None else price
         price, quantity = self.get_bid_price(ticker)
+
+        if quantity is not None:
+            quantity = int(0.5*quantity) if int(0.5*quantity) != 0 else 1
 
         if price is None:
             price = price_information.bid if price_information.bid is not None else p
