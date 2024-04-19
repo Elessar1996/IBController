@@ -185,14 +185,31 @@ class IBAlternative:
 
             self.orderId_ticker[self.ib.next_valid_order_id] = (c, order)
 
-    def check_open_orders(self, ticker):
+    def check_order(self, req_id):
 
         open_orders = self.ib.get_open_orders()
         time.sleep(2)
-        if ticker in open_orders.keys() and open_orders[ticker]['status'] == 'PreSubmitted':
+
+        the_order = open_orders[req_id]
+
+        if the_order.remaining == 0:
             return True
         else:
             return False
+
+    def handle_unfulfilled_order(self):
+
+        pass
+
+
+    # def check_open_orders(self, ticker):
+    #
+    #     open_orders = self.ib.get_open_orders()
+    #     time.sleep(2)
+    #     if ticker in open_orders.keys() and open_orders[ticker]['status'] == 'PreSubmitted':
+    #         return True
+    #     else:
+    #         return False
 
 
 if __name__ == '__main__':
@@ -205,7 +222,9 @@ if __name__ == '__main__':
     ib_al = IBAlternative(ib=ib)
     ib_al.simple_buy(ticker='AAPL', asset_type='stock', quantity=100, price=120)
     open_orders = ib_al.ib.get_open_orders()
+    time.sleep(2)
     print(open_orders)
+    ib_al.ib.cancelOrder(ib_al.ib.next_valid_order_id)
 
     # ib_al.start_getting_level_two('INAB', ticker_type=STOCK)
     # for i in range(100):
