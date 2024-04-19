@@ -77,6 +77,12 @@ class IBAlternative:
     def place_order_ib(self, contract, order):
         self.ib.placeOrder(orderId=self.ib.get_order_id(), contract=contract, order=order)
 
+    def simple_buy(self, ticker, asset_type, quantity, price):
+        c = self.ib.make_contract(ticker=ticker.upper(), ticker_type=asset_type)
+        order = self.ib.generate_order(price=price, quantity=quantity, action=BUY)
+
+        self.place_order_ib(contract=c, order=order)
+
     def ib_buy(self, ticker, asset_type, quantity, price):
 
         p = price
@@ -93,12 +99,11 @@ class IBAlternative:
         if q > price_information.ask_size:
             q = int(price_information.ask_size / 2) if int(price_information.ask_size / 2) != 0 else 1
 
-
         # price = price_information.ask if price_information.ask is not None else price
         price, quantity = self.get_ask_price(ticker)
 
         if quantity is not None:
-            quantity = int(0.5*float(quantity)) if int(0.5*float(quantity)) != 0 else 1
+            quantity = int(0.5 * float(quantity)) if int(0.5 * float(quantity)) != 0 else 1
 
         if price is None:
             price = price_information.ask if price_information.ask is not None else p
@@ -129,7 +134,7 @@ class IBAlternative:
         price, quantity = self.get_bid_price(ticker)
 
         if quantity is not None:
-            quantity = int(0.5*float(quantity)) if int(0.5*float(quantity)) != 0 else 1
+            quantity = int(0.5 * float(quantity)) if int(0.5 * float(quantity)) != 0 else 1
 
         if price is None:
             price = price_information.bid if price_information.bid is not None else p
@@ -186,9 +191,8 @@ if __name__ == '__main__':
     time.sleep(1)
 
     ib_al = IBAlternative(ib=ib)
-    ib_al.ib_buy(ticker='AAPL', asset_type='stock', quantity=100, price=120)
+    ib_al.simple_buy(ticker='AAPL', asset_type='stock', quantity=100, price=120)
     ib_al.ib.get_open_orders()
-
 
     # ib_al.start_getting_level_two('INAB', ticker_type=STOCK)
     # for i in range(100):
