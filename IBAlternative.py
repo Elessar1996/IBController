@@ -53,7 +53,9 @@ class IBAlternative:
 
         if len(bid_items) == 0:
             return None, None
-        selected_item = sorted(bid_items, key=lambda t: t.position)[-1]
+
+        selected_item = bid_items[-1]
+        # selected_item = sorted(bid_items, key=lambda t: t.position)[-1]
         print(f'bid price for the ticker={ticker} has been picked up from level 2: {selected_item}')
         return selected_item.price, selected_item.size
 
@@ -67,8 +69,8 @@ class IBAlternative:
 
         if len(ask_items) == 0:
             return None, None
-
-        selected_item = sorted(ask_items, key=lambda t: t.position)[-1]
+        selected_item = ask_items[-1]
+        # selected_item = sorted(ask_items, key=lambda t: t.position)[-1]
         print(f'ask price for the ticker={ticker} has been picked up from level 2: {selected_item}')
         return selected_item.price, selected_item.size
 
