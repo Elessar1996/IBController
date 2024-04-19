@@ -186,8 +186,11 @@ if __name__ == '__main__':
     time.sleep(1)
 
     ib_al = IBAlternative(ib=ib)
-    ib_al.start_getting_level_two('INAB', ticker_type=STOCK)
-    for i in range(100):
-        time.sleep(0.1)
-        print(ib_al.ib.level_two)
-    # ib_al.ib_buy(ticker='INAB', asset_type='stock', quantity=1000000, price=120)
+    ib_al.ib_buy(ticker='AAPL', asset_type='stock', quantity=100, price=120)
+    ib_al.ib.get_open_orders()
+
+
+    # ib_al.start_getting_level_two('INAB', ticker_type=STOCK)
+    # for i in range(100):
+    #     time.sleep(0.1)
+    #     print(ib_al.ib.level_two)

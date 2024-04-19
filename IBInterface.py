@@ -33,6 +33,7 @@ class Wrapper(EWrapper):
         self.open_orders = {}
         self.level_two = {}
         self.level_two_based_on_id = {}
+
     def historicalData(self, reqId: int, bar: BarData):
 
         self.historical_data.append(bar)
@@ -139,21 +140,38 @@ class Wrapper(EWrapper):
         self.permId2ord[order.permId] = order
         order_ = {'order': order, 'status': orderState.status}
         self.open_orders[contract.symbol] = order_
-    def updateMktDepth(self, reqId:TickerId , position:int, operation:int,
-                        side:int, price:float, size:int):
+
+    def updateMktDepth(self, reqId: TickerId, position: int, operation: int,
+                       side: int, price: float, size: int):
         super().updateMktDepth(reqId, position, operation, side, price, size)
         # print("UpdateMarketDepth. ReqId:", reqId, "Position:", position, "Operation:",
         # operation, "Side:", side, "Price:", price, "Size:", size)
 
-
-
-    def updateMktDepthL2(self, reqId:TickerId , position:int, marketMaker:str,
-                          operation:int, side:int, price:float, size:int, isSmartDepth:bool):
+    def updateMktDepthL2(self, reqId: TickerId, position: int, marketMaker: str,
+                         operation: int, side: int, price: float, size: int, isSmartDepth: bool):
         super().updateMktDepthL2(reqId, position, marketMaker, operation, side, price, size, isSmartDepth)
         # print("UpdateMarketDepthL2. ReqId:", reqId, "Position:", position, "MarketMaker:", marketMaker, "Operation:",
         # operation, "Side:", side, "Price:", price, "Size:", size, "isSmartDepth:", isSmartDepth)
         level_two_info = LevelTwoInformation(reqId, marketMaker, position, operation, side, price, size, isSmartDepth)
         self.level_two[reqId].append(level_two_info)
+
+    def orderStatus(self, orderId: OrderId, status: str, filled: float,
+                    remaining: float, avgFillPrice: float, permId: int,
+                    parentId: int, lastFillPrice: float, clientId: int,
+                    whyHeld: str, mktCapPrice: float):
+
+        super().orderStatus(orderId, status, filled, remaining,
+                            avgFillPrice, permId, parentId, lastFillPrice, clientId, whyHeld, mktCapPrice)
+        print("OrderStatus. Id:", orderId, "Status:", status, "Filled:", filled,
+              "Remaining:", remaining, "AvgFillPrice:", avgFillPrice,
+              "PermId:", permId, "ParentId:", parentId, "LastFillPrice:",
+              lastFillPrice, "ClientId:", clientId, "WhyHeld:",
+              whyHeld, "MktCapPrice:", mktCapPrice)
+
+    def openOrderEnd(self):
+        super().openOrderEnd()
+        print("OpenOrderEnd")
+
 
 class Client(EClient):
 
@@ -266,10 +284,6 @@ class Client(EClient):
             contract.exchange = 'PAXOS'
 
         return contract
-
-
-
-
 
 
 class MainIB(Wrapper, Client):
@@ -546,17 +560,8 @@ class MainIB(Wrapper, Client):
             print(f'coming from get_level_two: {e}')
 
 
-    # def main(self):
-    #
-    #     positions = self.get_positions()
-    #
-    #     for p in positions:
-    #         print(p)
-
-
 if __name__ == '__main__':
     # print(ibapi.__version__)
     ib = MainIB(11)
     time.sleep(5)
     ib.main()
-
