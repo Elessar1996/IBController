@@ -185,21 +185,27 @@ class IBAlternative:
 
             self.orderId_ticker[self.ib.next_valid_order_id] = (c, order)
 
-    def check_order(self, req_id):
+    def check_order(self, order_id):
 
         open_orders = self.ib.get_open_orders()
         time.sleep(2)
 
-        the_order = open_orders[req_id]
+        the_order = open_orders[order_id]
 
         if the_order.remaining == 0:
             return True
         else:
             return False
 
-    def handle_unfulfilled_order(self):
+    def handle_unfulfilled(self, order_id):
 
-        pass
+        self.cancel_order(order_id)
+
+
+    def cancel_order(self, order_id):
+
+        self.ib.cancelOrder(order_id, '')
+
 
 
     # def check_open_orders(self, ticker):
@@ -224,7 +230,11 @@ if __name__ == '__main__':
     open_orders = ib_al.ib.get_open_orders()
     time.sleep(2)
     print(open_orders)
-    ib_al.ib.cancelOrder(ib_al.ib.next_valid_order_id)
+    if ib_al.check_order(ib_al.ib.next_valid_order_id):
+        print(f'order is fully fulfilled')
+    else:
+        print(f'Nah')
+    # ib_al.ib.cancelOrder(ib_al.ib.next_valid_order_id)
 
     # ib_al.start_getting_level_two('INAB', ticker_type=STOCK)
     # for i in range(100):
