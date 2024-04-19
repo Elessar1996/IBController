@@ -45,21 +45,27 @@ class IBAlternative:
 
     def get_bid_price(self, ticker):
 
-        req_id = self.get_req_ids(ticker)
+        req_id = self.get_req_id(ticker)
 
         data_items = self.ib.level_two[req_id][-10:]
 
         bid_items = [i for i in data_items if i.side == 1]
 
+        if len(bid_items) == 0:
+            return None
+
         return sorted(bid_items, key=lambda t: t.position)[-1].price
 
     def get_ask_price(self, ticker):
 
-        req_id = self.get_req_ids(ticker)
+        req_id = self.get_req_id(ticker)
 
         data_items = self.ib.level_two[req_id][-10:]
 
         ask_items = [i for i in data_items if i.side == 0]
+
+        if len(ask_items) == 0:
+            return None
 
         return sorted(ask_items, key=lambda t: t.position)[-1].price
 
@@ -67,6 +73,8 @@ class IBAlternative:
         self.ib.placeOrder(orderId=self.ib.get_order_id(), contract=contract, order=order)
 
     def ib_buy(self, ticker, asset_type, quantity, price):
+
+        p = price
 
         c = self.ib.make_contract(ticker=ticker.upper(), ticker_type=asset_type)
 
@@ -80,12 +88,18 @@ class IBAlternative:
 
         # price = price_information.ask if price_information.ask is not None else price
         price = self.get_ask_price(ticker)
+
+        if price is None:
+            price = price_information.ask if price_information.ask is not None else p
+
         order = self.ib.generate_order(price=price, quantity=quantity, action=BUY)
         self.place_order_ib(contract=c, order=order)
         self.track_volume[ticker] = quantity
         self.check_open_orders(ticker=ticker)
 
     def ib_sell(self, ticker, asset_type, quantity, price):
+
+        p = price
 
         c = self.ib.make_contract(ticker=ticker.upper(), ticker_type=asset_type)
 
@@ -99,6 +113,10 @@ class IBAlternative:
 
         # price = price_information.bid if price_information.bid is not None else price
         price = self.get_bid_price(ticker)
+
+        if price is None:
+            price = price_information.bid if price_information.bid is not None else p
+
         order = self.ib.generate_order(price=price, quantity=quantity, action=SELL)
         self.place_order_ib(contract=c, order=order)
 
