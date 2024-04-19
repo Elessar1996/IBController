@@ -204,7 +204,8 @@ if __name__ == '__main__':
 
     ib_al = IBAlternative(ib=ib)
     ib_al.simple_buy(ticker='AAPL', asset_type='stock', quantity=100, price=120)
-    ib_al.ib.get_open_orders()
+    open_orders = ib_al.ib.get_open_orders()
+    print(open_orders)
 
     # ib_al.start_getting_level_two('INAB', ticker_type=STOCK)
     # for i in range(100):
