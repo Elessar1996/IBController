@@ -83,6 +83,8 @@ class IBAlternative:
 
         self.place_order_ib(contract=c, order=order)
 
+        print(f'next valid order id: {self.ib.next_valid_order_id}')
+
     def ib_buy(self, ticker, asset_type, quantity, price):
 
         p = price
