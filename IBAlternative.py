@@ -110,6 +110,8 @@ class IBAlternative:
         if quantity is None:
             quantity = q
         order = self.ib.generate_order(price=price, quantity=quantity, action=BUY)
+
+        print('order id is:', order.id)
         self.place_order_ib(contract=c, order=order)
         self.track_volume[ticker] = quantity
         self.check_open_orders(ticker=ticker)

@@ -138,8 +138,7 @@ class Wrapper(EWrapper):
         #       "LmtPrice:", order.lmtPrice, "AuxPrice:", order.auxPrice, "Status:", orderState.status)
         order.contract = contract
         self.permId2ord[order.permId] = order
-        order_ = {'order': order, 'status': orderState.status}
-        self.open_orders[contract.symbol] = order_
+        self.open_orders[contract.symbol] = None
 
     def updateMktDepth(self, reqId: TickerId, position: int, operation: int,
                        side: int, price: float, size: int):
