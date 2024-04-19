@@ -52,9 +52,10 @@ class IBAlternative:
         bid_items = [i for i in data_items if i.side == 1]
 
         if len(bid_items) == 0:
-            return None
-
-        return sorted(bid_items, key=lambda t: t.position)[-1].price
+            return None, None
+        selected_item = sorted(bid_items, key=lambda t: t.position)[-1]
+        print(f'bid price for the ticker={ticker} has been picked up from level 2: {selected_item}')
+        return selected_item.price, selected_item.size
 
     def get_ask_price(self, ticker):
 
@@ -65,9 +66,11 @@ class IBAlternative:
         ask_items = [i for i in data_items if i.side == 0]
 
         if len(ask_items) == 0:
-            return None
+            return None, None
 
-        return sorted(ask_items, key=lambda t: t.position)[-1].price
+        selected_item = sorted(ask_items, key=lambda t: t.position)[-1]
+        print(f'ask price for the ticker={ticker} has been picked up from level 2: {selected_item}')
+        return selected_item.price, selected_item.size
 
     def place_order_ib(self, contract, order):
         self.ib.placeOrder(orderId=self.ib.get_order_id(), contract=contract, order=order)
@@ -76,6 +79,8 @@ class IBAlternative:
 
         p = price
 
+        q = quantity
+
         c = self.ib.make_contract(ticker=ticker.upper(), ticker_type=asset_type)
 
         price_information = self.ib.get_market_data(contract=c,
@@ -83,15 +88,17 @@ class IBAlternative:
                                                     live_data=False)
         time.sleep(1)
 
-        if quantity > price_information.ask_size:
-            quantity = int(price_information.ask_size / 2) if int(price_information.ask_size / 2) != 0 else 1
+        if q > price_information.ask_size:
+            q = int(price_information.ask_size / 2) if int(price_information.ask_size / 2) != 0 else 1
+
 
         # price = price_information.ask if price_information.ask is not None else price
-        price = self.get_ask_price(ticker)
+        price, quantity = self.get_ask_price(ticker)
 
         if price is None:
             price = price_information.ask if price_information.ask is not None else p
-
+        if quantity is None:
+            quantity = q
         order = self.ib.generate_order(price=price, quantity=quantity, action=BUY)
         self.place_order_ib(contract=c, order=order)
         self.track_volume[ticker] = quantity
@@ -101,6 +108,8 @@ class IBAlternative:
 
         p = price
 
+        q = quantity
+
         c = self.ib.make_contract(ticker=ticker.upper(), ticker_type=asset_type)
 
         price_information = self.ib.get_market_data(contract=c,
@@ -108,14 +117,17 @@ class IBAlternative:
                                                     live_data=False)
         time.sleep(1)
 
-        if quantity > price_information.bid_size / 2:
-            quantity = int(price_information.bid_size / 2) if int(price_information.bid_size / 2) != 0 else 1
+        if q > price_information.bid_size / 2:
+            q = int(price_information.bid_size / 2) if int(price_information.bid_size / 2) != 0 else 1
 
         # price = price_information.bid if price_information.bid is not None else price
-        price = self.get_bid_price(ticker)
+        price, quantity = self.get_bid_price(ticker)
 
         if price is None:
             price = price_information.bid if price_information.bid is not None else p
+
+        if quantity is None:
+            quantity = q
 
         order = self.ib.generate_order(price=price, quantity=quantity, action=SELL)
         self.place_order_ib(contract=c, order=order)
