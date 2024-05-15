@@ -56,7 +56,8 @@ class IBAlternative:
         if len(bid_items) == 0:
             return None, None
 
-        selected_item = bid_items[-1]
+        # selected_item = bid_items[-1]
+        selected_item = sorted(bid_items, key=lambda t: t.price)[0]
         # selected_item = sorted(bid_items, key=lambda t: t.position)[-1]
         print(f'bid price for the ticker={ticker} has been picked up from level 2: {selected_item}')
         return selected_item.price, selected_item.size
@@ -71,8 +72,9 @@ class IBAlternative:
 
         if len(ask_items) == 0:
             return None, None
-        selected_item = ask_items[-1]
+        # selected_item = ask_items[-1]
         # selected_item = sorted(ask_items, key=lambda t: t.position)[-1]
+        selected_item = sorted(ask_items, key=lambda t: t.price)[-1]
         print(f'ask price for the ticker={ticker} has been picked up from level 2: {selected_item}')
         return selected_item.price, selected_item.size
 
@@ -113,12 +115,14 @@ class IBAlternative:
             quantity = q
         order = self.ib.generate_order(price=price, quantity=quantity, action=BUY)
 
-        print('order id is:', order.id)
+        # print('order id is:', order.id)
         self.place_order_ib(contract=c, order=order)
         self.orderId_ticker[self.ib.next_valid_order_id] = (c, order)
 
         self.track_volume[ticker] = quantity
-        self.check_open_orders(ticker=ticker)
+
+        return quantity, self.ib.next_valid_order_id
+        # self.check_open_orders(ticker=ticker)
 
     def ib_sell(self, ticker, asset_type, quantity, price):
 
@@ -154,6 +158,8 @@ class IBAlternative:
         self.orderId_ticker[self.ib.next_valid_order_id] = (c, order)
 
         self.track_volume[ticker] = quantity
+
+        return quantity, self.ib.next_valid_order_id
 
     def close_position_ib(self, ticker, asset_type, price, quantity, position):
 
@@ -201,12 +207,9 @@ class IBAlternative:
 
         self.cancel_order(order_id)
 
-
     def cancel_order(self, order_id):
 
         self.ib.cancelOrder(order_id, '')
-
-
 
     # def check_open_orders(self, ticker):
     #
@@ -227,9 +230,9 @@ if __name__ == '__main__':
 
     ib_al = IBAlternative(ib=ib)
     ib_al.simple_buy(ticker='AAPL', asset_type='stock', quantity=100, price=120)
-    open_orders = ib_al.ib.get_open_orders()
-    time.sleep(2)
-    print(open_orders)
+    # open_orders = ib_al.ib.get_open_orders()
+    # time.sleep(2)
+    # print(open_orders)
     if ib_al.check_order(ib_al.ib.next_valid_order_id):
         print(f'order is fully fulfilled')
     else:
