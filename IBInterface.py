@@ -221,6 +221,7 @@ class Client(EClient):
         order = Order()
         order.action = action
         order.tif = 'GTC'
+        order.outsideRth = True
         order.eTradeOnly = False
         order.firmQuoteOnly = False
         order.orderType = 'LMT'
