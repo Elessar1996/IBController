@@ -45,38 +45,69 @@ class IBAlternative:
 
         return {v: k for k, v in self.id_ticker.items()}[ticker]
 
-    def get_bid_price(self, ticker):
+    def get_bid_price(self, ticker, quantity):
+        req_id = self.get_req_id(ticker)
+        data_items = self.ib.level_two[req_id][-15:]
+        bid_items = sorted([i for i in data_items if i.side == 1], key=lambda t: t.price, reverse=True)
+
+        volume_sum = 0
+
+        for item in bid_items:
+            volume_sum += item.position
+            if volume_sum >= quantity:
+                return item.price, item.quantity
+
+        return item.price, item.quantity
+
+    # def get_bid_price(self, ticker):
+    #
+    #     req_id = self.get_req_id(ticker)
+    #
+    #     data_items = self.ib.level_two[req_id][-10:]
+    #
+    #     bid_items = [i for i in data_items if i.side == 1]
+    #
+    #     if len(bid_items) == 0:
+    #         return None, None
+    #
+    #     # selected_item = bid_items[-1]
+    #     selected_item = sorted(bid_items, key=lambda t: t.price)[0]
+    #     # selected_item = sorted(bid_items, key=lambda t: t.position)[-1]
+    #     print(f'bid price for the ticker={ticker} has been picked up from level 2: {selected_item}')
+    #     return selected_item.price, selected_item.size
+
+    def get_ask_price(self, ticker, quantity):
 
         req_id = self.get_req_id(ticker)
+        data_items = self.ib.level_two[req_id][-15:]
 
-        data_items = self.ib.level_two[req_id][-10:]
+        ask_items = sorted([i for i in data_items if i.side == 0], key=lambda t: t.price, reverse=False)
 
-        bid_items = [i for i in data_items if i.side == 1]
+        volume_sum = 0
 
-        if len(bid_items) == 0:
-            return None, None
+        for item in ask_items:
 
-        # selected_item = bid_items[-1]
-        selected_item = sorted(bid_items, key=lambda t: t.price)[0]
-        # selected_item = sorted(bid_items, key=lambda t: t.position)[-1]
-        print(f'bid price for the ticker={ticker} has been picked up from level 2: {selected_item}')
-        return selected_item.price, selected_item.size
+            volume_sum += item.position
+            if volume_sum >= quantity:
+                return item.price, item.position
+        return item.price, item.position
 
-    def get_ask_price(self, ticker):
-
-        req_id = self.get_req_id(ticker)
-
-        data_items = self.ib.level_two[req_id][-10:]
-
-        ask_items = [i for i in data_items if i.side == 0]
-
-        if len(ask_items) == 0:
-            return None, None
-        # selected_item = ask_items[-1]
-        # selected_item = sorted(ask_items, key=lambda t: t.position)[-1]
-        selected_item = sorted(ask_items, key=lambda t: t.price)[-1]
-        print(f'ask price for the ticker={ticker} has been picked up from level 2: {selected_item}')
-        return selected_item.price, selected_item.size
+    #
+    # def get_ask_price(self, ticker):
+    #
+    #     req_id = self.get_req_id(ticker)
+    #
+    #     data_items = self.ib.level_two[req_id][-10:]
+    #
+    #     ask_items = [i for i in data_items if i.side == 0]
+    #
+    #     if len(ask_items) == 0:
+    #         return None, None
+    #     # selected_item = ask_items[-1]
+    #     # selected_item = sorted(ask_items, key=lambda t: t.position)[-1]
+    #     selected_item = sorted(ask_items, key=lambda t: t.price)[-1]
+    #     print(f'ask price for the ticker={ticker} has been picked up from level 2: {selected_item}')
+    #     return selected_item.price, selected_item.size
 
     def place_order_ib(self, contract, order):
         self.ib.placeOrder(orderId=self.ib.get_order_id(), contract=contract, order=order)
@@ -104,7 +135,7 @@ class IBAlternative:
             q = int(price_information.ask_size / 2) if int(price_information.ask_size / 2) != 0 else 1
 
         # price = price_information.ask if price_information.ask is not None else price
-        price, quantity = self.get_ask_price(ticker)
+        price, quantity = self.get_ask_price(ticker, q)
 
         if quantity is not None:
             quantity = int(0.5 * float(quantity)) if int(0.5 * float(quantity)) != 0 else 1
@@ -141,7 +172,7 @@ class IBAlternative:
             q = int(price_information.bid_size / 2) if int(price_information.bid_size / 2) != 0 else 1
 
         # price = price_information.bid if price_information.bid is not None else price
-        price, quantity = self.get_bid_price(ticker)
+        price, quantity = self.get_bid_price(ticker, q)
 
         if quantity is not None:
             quantity = int(0.5 * float(quantity)) if int(0.5 * float(quantity)) != 0 else 1
