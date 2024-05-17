@@ -55,9 +55,9 @@ class IBAlternative:
         for item in bid_items:
             volume_sum += item.position
             if volume_sum >= quantity:
-                return item.price, item.quantity
+                return item.price, item.position
 
-        return item.price, item.quantity
+        return item.price, volume_sum
 
     # def get_bid_price(self, ticker):
     #
@@ -90,7 +90,7 @@ class IBAlternative:
             volume_sum += item.position
             if volume_sum >= quantity:
                 return item.price, item.position
-        return item.price, item.position
+        return item.price, volume_sum
 
     #
     # def get_ask_price(self, ticker):
